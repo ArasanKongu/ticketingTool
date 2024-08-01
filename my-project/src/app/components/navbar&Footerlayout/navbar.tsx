@@ -19,7 +19,7 @@ export default function Nav() {
   ];
 
   return (
-    <Navbar
+    <Navbar position="static"
       isBordered
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
