@@ -2,12 +2,10 @@
 import React, { useState } from "react";
 import { Input, Button, Textarea, Select, SelectItem } from "@nextui-org/react";
 import { Location, Project, Types, Urgency, Watchers } from "./data";
-import { FaUser } from "react-icons/fa";
 
 const GenerateTicketForm = () => {
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [selectedPeople, setSelectedPeople] = useState<any[]>([]); // Adjust to handle complex objects
+  const [selectedPeople, setSelectedPeople] = useState<any[]>([]);
 
   const handleSelectionChange = (keys: any) => {
     console.log("Selection changed:", keys);
@@ -30,7 +28,7 @@ const GenerateTicketForm = () => {
   };
 
   return (
-    <div className="w-10/12 mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="w-[45rem] max-w-screen-lg mx-auto p-6 bg-white shadow-md rounded-lg max-h-[80vh] overflow-y-auto scrollbar-hide">
       <h1 className="text-2xl font-semibold mb-4">Create Ticket</h1>
       <form>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -146,11 +144,11 @@ const GenerateTicketForm = () => {
             />
           </div>
 
-          <div className="md:col-span-2 mt-8">
+          <div className="md:col-span-2 mt-3">
             <Textarea label="Description" rows={3} isRequired />
           </div>
 
-          <div className="md:col-span-2 mt-8">
+          <div className="md:col-span-2 mt-3">
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -172,8 +170,10 @@ const GenerateTicketForm = () => {
             </div>
           </div>
         </div>
-        <div className="mt-6 flex justify-end space-x-4">
-          <Button type="button">Save</Button>
+        <div className="mt-3 flex justify-center space-x-4">
+          <Button type="button" color="warning">
+            Submit Message
+          </Button>
         </div>
       </form>
     </div>
