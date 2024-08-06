@@ -9,8 +9,8 @@ import React from "react";
 
 type FormInputs = {
     email_id: string;
-    first_name: string;
-    last_name: string;
+    user_name: string;
+    admin_code: string;
     password: string
 }
 export default function SignUp() {
@@ -21,8 +21,8 @@ export default function SignUp() {
         const res = await fetch('http://localhost:8080/user', {
             method: 'POST',
             body: JSON.stringify({
-                first_name: data.current.first_name,
-                last_name: data.current.last_name,
+                user_name: data.current.user_name,
+                admin_code: data.current.admin_code,
                 email_id: data.current.email_id,
                 password: data.current.password,
             }),
@@ -41,8 +41,8 @@ export default function SignUp() {
         window.location.href = "/login";
     };
     const data = useRef<FormInputs>({
-        first_name: "",
-        last_name: "",
+        user_name: "",
+        admin_code: "",
         email_id: "",
         password: "",
     });
@@ -79,17 +79,17 @@ export default function SignUp() {
                     <CardBody>
                         <form onSubmit={register}>
                             <Input
-                                label='First Name'
+                                label='User Name'
                                 labelPlacement="outside"
-                                placeholder="Enter First Name"
+                                placeholder="Enter User Name"
                                 className="pb-4"
-                                onChange={(e) => (data.current.first_name = e.target.value)} />
+                                onChange={(e) => (data.current.user_name = e.target.value)} />
                             <Input
-                                label='Last Name'
+                                label='Admin Code'
                                 labelPlacement="outside"
-                                placeholder="Enter Last Name"
+                                placeholder="Enter Admin Code"
                                 className="pb-4"
-                                onChange={(e) => (data.current.last_name = e.target.value)} />
+                                onChange={(e) => (data.current.admin_code = e.target.value)} />
                             <Input
                                 label='Email ID'
                                 labelPlacement="outside"
@@ -111,12 +111,16 @@ export default function SignUp() {
                                 }
                                 onValueChange={setPasswordvalidation}
                                 type={isVisible ? "text" : "password"}
-                                onChange={(e) => (data.current.password = e.target.value)} />
-                            {/* <Input
-                                label='Confirm Password'
-                                labelPlacement="outside"
-                                placeholder="Re-Enter Password"
-                                className="pb-4" /> */}
+                                onChange={(e) => (data.current.password = e.target.value)}
+                                endContent={
+                                    <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                                        {isVisible ? (
+                                            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                        ) : (
+                                            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                        )}
+                                    </button>
+                                } />
                             <div className="flex justify-center">
                                 <Button
                                     variant="solid"
@@ -128,7 +132,7 @@ export default function SignUp() {
                     </CardBody>
                     <Divider />
                     <CardFooter className="place-content-center">
-                        <p>Already have an account. <Link href="#">Click here</Link></p>
+                        <p>Already have an account. <Link href="/login">Click here</Link></p>
                     </CardFooter>
                 </Card>
             </div>
