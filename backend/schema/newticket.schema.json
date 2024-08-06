@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "userName": { "type": "string" },
+    "EmpolyeeNo": { "type": "string" },
+    "type": { "type": "string" },
+    "project": { "type": "string" },
+    "urgency": { "type": "string" },
+    "Location": { "type": "string" },
+    "watchers": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" }
+  },
+  "required": [
+    "userName",
+    "EmpolyeeNo",
+    "type",
+    "project",
+    "urgency",
+    "Location",
+    "watchers",
+    "title",
+    "description"
+  ]
+}
