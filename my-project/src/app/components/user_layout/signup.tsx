@@ -20,7 +20,7 @@ export default function SignupLayout() {
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
-      //window.alert("Passwords do not match");
+      window.alert("Passwords do not match");
       return;
     }
 

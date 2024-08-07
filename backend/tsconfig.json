@@ -8,9 +8,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "",
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types","./src/app/types"],
     "types": ["node"]
   },
-  "include": ["**/*.ts", "server.ts"],
+  "include": ["**/*.ts", "server.ts", "src/**/*"],
   "exclude": ["node_modules"]
 }

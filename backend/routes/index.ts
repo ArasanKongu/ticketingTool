@@ -1,8 +1,9 @@
-// import { Application } from "express";
-// import newTicketRoutes from "./newTicket.routes"; // Adjust the import path as needed
+import { Application } from "express";
+import userRoutes from "./user.routes";
 
-// export class Routes {
-//   constructor(app: Application) {
-//     app.use("/api", newTicketRoutes); // Prefix all routes with "/api"
-//   }
-// }
+
+export default class Routes {
+    constructor(app: Application) {
+        app.use("/api/user", userRoutes)
+    }
+}
