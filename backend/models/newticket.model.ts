@@ -12,4 +12,5 @@ export interface NewTicketModel extends RowDataPacket {
   watchers: string;
   title: string;
   description: string;
+  date?: Date;
 }

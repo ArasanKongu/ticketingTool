@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import React, { ReactNode } from "react";
-import imag from "../../../../public/logo1.png";
+import imag from "../../../../public/aaa.jpg";
 
 interface LayoutProps {
   children: ReactNode;

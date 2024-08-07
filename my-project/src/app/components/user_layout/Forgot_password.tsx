@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import axios from "axios";
 
-const ForgotPassword = () => {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -33,7 +33,7 @@ const ForgotPassword = () => {
     } catch (error) {
       const errorMsg = "Email Not found";
       setErrorMessage(errorMsg);
-     //window.alert(errorMsg);
+      //window.alert(errorMsg);
     }
   };
 
@@ -76,6 +76,4 @@ const ForgotPassword = () => {
       </div>
     </div>
   );
-};
-
-export default ForgotPassword;
+}

@@ -4,7 +4,7 @@ import Login_layout from "../components/user_layout/login_layout";
 
 const Login = () => {
   return (
-    <Layout>
+    <Layout> 
       <Login_layout />
     </Layout>
   );

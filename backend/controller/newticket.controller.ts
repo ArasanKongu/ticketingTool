@@ -1,5 +1,5 @@
 // controllers/newticket.controller.ts
-import { Request, Response, NextFunction } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import { newTicketRepository } from "../repository/newticket.respository";
 import { NewTicketModel } from "../models/newticket.model";
 
@@ -8,12 +8,13 @@ export class NewTicketController {
     try {
       console.log("Request body:", req.body); // Log the request body
       const ticket: NewTicketModel = req.body;
-      res.status(201).json({
-        message: "Ticket created successfully",
-        // ticketId: result.insertId,
-      });
       const result = await newTicketRepository.create(ticket);
       console.log("Result:", result); // Log the result
+
+      res.status(201).json({
+        message: "Ticket created successfully",
+        ticketId: result.insertId,
+      });
     } catch (error) {
       console.error("Error in create controller:", error); // Log the error
       next(error);
@@ -37,6 +38,29 @@ export class NewTicketController {
       res.status(200).json({ message: "Ticket deleted successfully" });
     } catch (error) {
       console.error("Error in delete controller:", error); // Log the error
+      next(error);
+    }
+  }
+
+  static async getByEmployeeNo(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const employeeNo = req.params.EmployeeNo;
+
+      if (!employeeNo) {
+        console.error("Invalid employee number"); // Log invalid employee number error
+        return res.status(400).json({ message: "Invalid employee number" });
+      }
+      console.log("employeeNo", employeeNo);
+
+      const tickets = await newTicketRepository.getByEmployeeNo(employeeNo);
+      console.log("Tickets:", tickets);
+      res.status(200).json(tickets);
+    } catch (error) {
+      console.error("Error in getByEmployeeNo controller:", error); // Log the error
       next(error);
     }
   }

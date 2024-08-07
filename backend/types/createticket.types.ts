@@ -9,4 +9,5 @@ export interface NewTicketObject {
   watchers: string;
   title: string;
   description: Text;
+  date: Date;
 }

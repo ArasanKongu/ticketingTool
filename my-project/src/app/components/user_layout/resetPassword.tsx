@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
-const ResetPassword: React.FC = () => {
+export default function ResetPassword() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
@@ -113,6 +113,4 @@ const ResetPassword: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default ResetPassword;
+}

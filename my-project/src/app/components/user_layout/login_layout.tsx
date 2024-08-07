@@ -4,7 +4,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import Link from "next/link";
 import axios from "axios";
 
-const LoginLayout: React.FC = () => {
+export default function LoginLayout() {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +42,9 @@ const LoginLayout: React.FC = () => {
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <div className="mb-8">
-        <h2 className="text-center font-bold">Welcome to Lovebirds</h2>
+        <h2 className="text-center font-bold text-orange-800">
+          Nexware Technologies
+        </h2>
       </div>
       {loading && (
         <div className="flex justify-center mb-4">
@@ -118,6 +120,4 @@ const LoginLayout: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default LoginLayout;
+}

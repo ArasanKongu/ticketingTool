@@ -4,7 +4,7 @@ import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import Link from "next/link";
 
-const SignupLayout: React.FC = () => {
+export default function SignupLayout() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
@@ -47,7 +47,9 @@ const SignupLayout: React.FC = () => {
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <div className="mb-8">
-        <h2 className="text-center font-bold">Welcome to Lovebirds</h2>
+        <h2 className="text-center font-bold text-orange-800">
+          Nexware Technologies
+        </h2>
       </div>
       <div className="mb-4">
         <Input
@@ -98,9 +100,9 @@ const SignupLayout: React.FC = () => {
       </div>
       <div className="mb-6">
         <Input
-          label="Confirm Password"
+          label="Super Admin Code"
           variant="underlined"
-          placeholder="Enter your confirm password"
+          placeholder="Enter your Super Admin Code"
           endContent={
             <button
               className="focus:outline-none"
@@ -137,6 +139,4 @@ const SignupLayout: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default SignupLayout;
+}
