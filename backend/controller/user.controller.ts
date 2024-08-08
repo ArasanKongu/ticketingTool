@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Ajv from "ajv";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ResponseObject, StatusResponse } from "../types/response.type";
 import SchemaValidate from "../utils/apiErrhandler";
@@ -52,12 +52,13 @@ export default class UserController {
                 return res.status(400).json(responseObject);
             }
 
-            const hashedPassword = bcrypt.hashSync(password, 10);
+            // const hashedPassword = bcrypt.hashSync(password, 10);
 
             const newUser: User = {
                 username,
                 email,
-                password: hashedPassword,
+                password
+                // password: hashedPassword,
             };
 
             user = await userRepository.save(newUser);
@@ -94,20 +95,17 @@ export default class UserController {
                 email: string;
                 password: string;
             };
-            console.log("Login:", { email, password });
+            console.log("Login Request:", { email, password });
 
-            let user = await userRepository.retrieve({
-                email,
-                status: 0
-            });
+            let user = await userRepository.login(email, password);
 
             if (!user) {
-                responseObject.message = "User not found";
+                responseObject.message = "User not found or invalid password";
                 return res.status(400).json(responseObject);
             }
 
-            const passwordIsValid = bcrypt.compareSync(password, user.password);
-            if (!passwordIsValid) {
+            // const passwordIsValid = bcrypt.compareSync(password, user.password);
+            if (password !== user.password) {
                 responseObject.message = "Invalid password";
                 return res.status(400).json(responseObject);
             }
@@ -127,5 +125,12 @@ export default class UserController {
             responseObject.error = error;
             return res.status(500).json(responseObject);
         }
+    }
+    async logout(req: Request, res: Response) {
+        let responseObject: ResponseObject = {
+            status: StatusResponse.success,
+            message: "Logout successful",
+        }
+        return res.status(200).json(responseObject);
     }
 }
