@@ -18,23 +18,23 @@ export default class UserController {
       return res.status(400).json(responseObject);
     }
 
-        try {
-            const body = req.body as {
-                username: string;
-                email: string;
-                password: string;
-                confirmPassword: string;
-                superAdminCode: string
-            };
-            console.log("Signup:", body);
+    try {
+      const body = req.body as {
+        username: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+        superAdminCode: string
+      };
+      console.log("Signup:", body);
 
-            const { username, email, password, confirmPassword, superAdminCode } = body;
+      const { username, email, password, confirmPassword, superAdminCode } = body;
 
-            const storedCode = await userRepository.getSuperAdminCode();
-            if (superAdminCode !== storedCode) {
-                responseObject.message = "Invalid Super Admin Code";
-                return res.status(400).json(responseObject);
-            }
+      const storedCode = await userRepository.getSuperAdminCode();
+      if (superAdminCode !== storedCode) {
+        responseObject.message = "Invalid Super Admin Code";
+        return res.status(400).json(responseObject);
+      }
 
       let schema = require("../schema/user/signup.schema.json");
       const validate = ajv.compile(schema);
@@ -42,8 +42,6 @@ export default class UserController {
         responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
         return res.status(400).json(responseObject);
       }
-
-
 
       if (password !== confirmPassword) {
         responseObject.message = "Passwords do not match";
@@ -55,16 +53,16 @@ export default class UserController {
         status: 0,
       });
 
-            if (user) {
-                responseObject.message = "User already exists";
-                return res.status(400).json(responseObject);
-            }
+      if (user) {
+        responseObject.message = "User already exists";
+        return res.status(400).json(responseObject);
+      }
 
-            const newUser: User = {
-                username,
-                email,
-                password
-            };
+      const newUser: User = {
+        username,
+        email,
+        password
+      };
 
       user = await userRepository.save(newUser);
 
@@ -109,10 +107,10 @@ export default class UserController {
         return res.status(400).json(responseObject);
       }
 
-            if (password !== user.password) {
-                responseObject.message = "Invalid password";
-                return res.status(400).json(responseObject);
-            }
+      if (password !== user.password) {
+        responseObject.message = "Invalid password";
+        return res.status(400).json(responseObject);
+      }
 
       const token = jwt.sign({ id: user.id }, "your-secret-key", {
         expiresIn: 86400, // 24 hours
@@ -122,55 +120,54 @@ export default class UserController {
       responseObject.message = "Login successful";
       responseObject.data = { accessToken: token };
 
-            return res.status(200).json(responseObject);
-        } catch (error) {
-            console.error("Error in login", error);
-            responseObject.message = "Internal Server Error";
-            responseObject.error = error;
-            return res.status(500).json(responseObject);
-        }
+      return res.status(200).json(responseObject);
+    } catch (error) {
+      console.error("Error in login", error);
+      responseObject.message = "Internal Server Error";
+      responseObject.error = error;
+      return res.status(500).json(responseObject);
     }
-    async logout(req: Request, res: Response) {
-        let responseObject: ResponseObject = {
-            status: StatusResponse.success,
-            message: "Logout successful",
-        }
-        return res.status(200).json(responseObject);
+  }
+  async logout(req: Request, res: Response) {
+    let responseObject: ResponseObject = {
+      status: StatusResponse.success,
+      message: "Logout successful",
     }
-    async setSuperAdmin(req: Request, res: Response) {
-        let responseObject: ResponseObject = {
-            status: StatusResponse.failed,
-            message: "Invalid Parameter",
-        }
-        if (!req.body || !req.body.userId) {
-            return res.status(400).json(responseObject)
-        }
-        try {
-            const userId = req.body.userId;
-            const superAdminCode = await userRepository.setSuperAdmin(userId);
-            responseObject.status = StatusResponse.success;
-            responseObject.message = "Super Admin set successfully";
-            responseObject.data = { superAdminCode: superAdminCode };
-            return res.status(200).json(responseObject);
-        } catch (error) {
-            console.error("Error in setSuperAdmin", error);
-            responseObject.message = "Internal Server Error";
-            responseObject.error = error;
-            return res.status(500).json(responseObject);
-        }
+    return res.status(200).json(responseObject);
+  }
+  async setSuperAdmin(req: Request, res: Response) {
+    let responseObject: ResponseObject = {
+      status: StatusResponse.failed,
+      message: "Invalid Parameter",
     }
+    if (!req.body || !req.body.userId) {
+      return res.status(400).json(responseObject)
+    }
+    try {
+      const userId = req.body.userId;
+      const superAdminCode = await userRepository.setSuperAdmin(userId);
+      responseObject.status = StatusResponse.success;
+      responseObject.message = "Super Admin set successfully";
+      responseObject.data = { superAdminCode: superAdminCode };
+      return res.status(200).json(responseObject);
+    } catch (error) {
+      console.error("Error in setSuperAdmin", error);
+      responseObject.message = "Internal Server Error";
+      responseObject.error = error;
+      return res.status(500).json(responseObject);
+    }
+  }
 
-    async getSuperAdminCode(req: Request, res: Response) {
-        try {
-            const superAdminCode = await userRepository.getSuperAdminCode();
-            if (!superAdminCode) {
-                return res.status(404).json({ message: "Super Admin code not found" });
-            }
-            return res.status(200).json({ superAdminCode: superAdminCode });
-        } catch (error) {
-            console.error("Error in getSuperAdminCode", error);
-            return res.status(500).json({ message: "Internal Server Error" });
-        }
-
+  async getSuperAdminCode(req: Request, res: Response) {
+    try {
+      const superAdminCode = await userRepository.getSuperAdminCode();
+      if (!superAdminCode) {
+        return res.status(404).json({ message: "Super Admin code not found" });
+      }
+      return res.status(200).json({ superAdminCode: superAdminCode });
+    } catch (error) {
+      console.error("Error in getSuperAdminCode", error);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
+  }
 }
