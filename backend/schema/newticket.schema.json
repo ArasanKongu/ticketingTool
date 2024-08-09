@@ -4,22 +4,13 @@
     "userName": { "type": "string" },
     "EmpolyeeNo": { "type": "string" },
     "type": { "type": "string" },
+
     "project": { "type": "string" },
     "urgency": { "type": "string" },
-    "Location": { "type": "string" },
-    "watchers": { "type": "string" },
+    "location": { "type": "string" },
+    "watchers": { "type": "array" },
     "title": { "type": "string" },
     "description": { "type": "string" }
   },
-  "required": [
-    "userName",
-    "EmpolyeeNo",
-    "type",
-    "project",
-    "urgency",
-    "Location",
-    "watchers",
-    "title",
-    "description"
-  ]
+  "required": ["type", "project", "urgency", "location", "title", "description"]
 }

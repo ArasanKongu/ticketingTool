@@ -1,43 +1,41 @@
 // controllers/newticket.controller.ts
-import e, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { newTicketRepository } from "../repository/newticket.respository";
 import { NewTicketModel } from "../models/newticket.model";
+
+import Ajv from "ajv";
+import SchemaValidate from "../utils/apiErrhandler";
+import { ResponseObject, StatusResponse } from "../types/response.type";
+const ajv = new Ajv();
 
 export class NewTicketController {
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("Request body:", req.body); // Log the request body
+      let responseObject: ResponseObject = {
+        status: StatusResponse.failed,
+        message: "Invalid Parameter",
+      };
+
+      const schema = require("../schema/newticket.schema.json");
+      const validate = ajv.compile(schema);
+
+      console.log(schema, "schema", req.body);
+      const valid = validate(req.body);
+      console.log("Request body:", valid); // Log the request body
+      if (!valid) {
+        responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
+        console.log("hii");
+        return res.status(500).json(responseObject);
+      }
       const ticket: NewTicketModel = req.body;
-      const result = await newTicketRepository.create(ticket);
-      console.log("Result:", result); // Log the result
 
       res.status(201).json({
         message: "Ticket created successfully",
-        ticketId: result.insertId,
       });
+      const result = await newTicketRepository.create(ticket);
+      console.log("Result:", result); // Log the result
     } catch (error) {
       console.error("Error in create controller:", error); // Log the error
-      next(error);
-    }
-  }
-
-  static async delete(req: Request, res: Response, next: NextFunction) {
-    try {
-      const ticketId = parseInt(req.params.id, 10);
-      if (isNaN(ticketId)) {
-        console.error("Invalid ticket ID"); // Log invalid ID error
-        return res.status(400).json({ message: "Invalid ticket ID" });
-      }
-
-      const result = await newTicketRepository.delete(ticketId);
-      console.log("Delete result:", result); // Log the delete result
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: "Ticket not found" });
-      }
-
-      res.status(200).json({ message: "Ticket deleted successfully" });
-    } catch (error) {
-      console.error("Error in delete controller:", error); // Log the error
       next(error);
     }
   }
