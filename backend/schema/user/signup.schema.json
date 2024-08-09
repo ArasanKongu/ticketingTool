@@ -15,8 +15,11 @@
         "confirmPassword": {
             "type": "string",
             "minLength": 8
+        },
+        "superAdminCode": {
+            "type": "string"
         }
     },
-    "required": ["username", "email", "password", "confirmPassword"],
+    "required": ["username", "email", "password", "confirmPassword", "superAdminCode"],
     "additionalProperties": false
 }

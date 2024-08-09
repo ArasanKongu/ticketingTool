@@ -20,7 +20,7 @@ export default function LoginLayout() {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:8000/api/login", {
+      const response = await axios.post("http://localhost:8080/login", {
         email,
         password,
       });

@@ -1,14 +1,13 @@
 import { createPool, Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 import { User } from '../models/user.model';
-import bcrypt from 'bcrypt';
 import 'dotenv/config';
 
 // Create a pool of connections
 const pool = createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    database: process.env.DB_NAME, // Replace with your database name
-    password: process.env.DB_PASSWORD, // Replace with your database password
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
     waitForConnections: true,
     connectionLimit: 10
 });
@@ -46,7 +45,6 @@ class UserRepository {
             throw Error("Invalid Parameter");
         }
 
-        // const hashedPassword = await bcrypt.hash(user.password, 10);
         const query = `INSERT INTO users (username, email, password, status) VALUES (?, ?, ?, ?)`;
 
         const [result] = await this.pool.query<ResultSetHeader>(query, [user.username, user.email, user.password, user.status]);
@@ -66,8 +64,6 @@ class UserRepository {
         }
         const user = rows[0] as User;
 
-        // const passwordIsValid = await bcrypt.compare(password, user.password);
-        // console.log('Password is valid:', passwordIsValid);
 
         if(password !== user.password) {
             console.log('Invalid password for user:', email)
@@ -76,7 +72,25 @@ class UserRepository {
         
         return user;
     }
+
+    async setSuperAdmin(userId:number) : Promise<string> {
+        const superAdminCode = Math.floor(1000 + Math.random() * 9000).toString();
+        const query = `UPDATE users SET status = ?, superAdminCode = ? WHERE id = ?`;
+        const [result] = await this.pool.query<ResultSetHeader>(query, [2, superAdminCode, userId])
+
+        if(result.affectedRows === 0) {
+            throw new Error('User not found');
+        }
+        return superAdminCode;
+    }
+
+    async getSuperAdminCode(): Promise<string | null> {
+        const query = `SELECT superAdminCode FROM users WHERE status = 2 LIMIT 1`;
+        const [rows] = await this.pool.query<RowDataPacket[]>(query);
+        if(rows.length === 0) {
+            return null
+        }
+        return rows[0].superAdminCode;
+    }
 }
 export const userRepository = new UserRepository();
-
-

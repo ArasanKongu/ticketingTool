@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Ajv from "ajv";
-// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ResponseObject, StatusResponse } from "../types/response.type";
 import SchemaValidate from "../utils/apiErrhandler";
@@ -25,8 +24,17 @@ export default class UserController {
                 email: string;
                 password: string;
                 confirmPassword: string;
+                superAdminCode: string
             };
             console.log("Signup:", body);
+
+            const { username, email, password, confirmPassword, superAdminCode } = body;
+
+            const storedCode = await userRepository.getSuperAdminCode();
+            if (superAdminCode !== storedCode) {
+                responseObject.message = "Invalid Super Admin Code";
+                return res.status(400).json(responseObject);
+            }
 
             let schema = require("../schema/user/signup.schema.json");
             const validate = ajv.compile(schema);
@@ -35,7 +43,7 @@ export default class UserController {
                 return res.status(400).json(responseObject);
             }
 
-            const { username, email, password, confirmPassword } = body;
+
 
             if (password !== confirmPassword) {
                 responseObject.message = "Passwords do not match";
@@ -52,13 +60,10 @@ export default class UserController {
                 return res.status(400).json(responseObject);
             }
 
-            // const hashedPassword = bcrypt.hashSync(password, 10);
-
             const newUser: User = {
                 username,
                 email,
                 password
-                // password: hashedPassword,
             };
 
             user = await userRepository.save(newUser);
@@ -104,7 +109,6 @@ export default class UserController {
                 return res.status(400).json(responseObject);
             }
 
-            // const passwordIsValid = bcrypt.compareSync(password, user.password);
             if (password !== user.password) {
                 responseObject.message = "Invalid password";
                 return res.status(400).json(responseObject);
@@ -132,5 +136,41 @@ export default class UserController {
             message: "Logout successful",
         }
         return res.status(200).json(responseObject);
+    }
+    async setSuperAdmin(req: Request, res: Response) {
+        let responseObject: ResponseObject = {
+            status: StatusResponse.failed,
+            message: "Invalid Parameter",
+        }
+        if (!req.body || !req.body.userId) {
+            return res.status(400).json(responseObject)
+        }
+        try {
+            const userId = req.body.userId;
+            const superAdminCode = await userRepository.setSuperAdmin(userId);
+            responseObject.status = StatusResponse.success;
+            responseObject.message = "Super Admin set successfully";
+            responseObject.data = { superAdminCode: superAdminCode };
+            return res.status(200).json(responseObject);
+        } catch (error) {
+            console.error("Error in setSuperAdmin", error);
+            responseObject.message = "Internal Server Error";
+            responseObject.error = error;
+            return res.status(500).json(responseObject);
+        }
+    }
+
+    async getSuperAdminCode(req: Request, res: Response) {
+        try {
+            const superAdminCode = await userRepository.getSuperAdminCode();
+            if (!superAdminCode) {
+                return res.status(404).json({ message: "Super Admin code not found" });
+            }
+            return res.status(200).json({ superAdminCode: superAdminCode });
+        } catch (error) {
+            console.error("Error in getSuperAdminCode", error);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+
     }
 }

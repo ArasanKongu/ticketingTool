@@ -29,6 +29,11 @@ app.post('/login', async (req: Request, res: Response) => {
     return UserController.login(req, res);
 });
 
+app.post('/set-super-admin', async (req: Request, res: Response) => {
+    const UserController = new (await import('./controller/user.controller')).default();
+    return UserController.setSuperAdmin(req, res);
+});
+
 // Authentication middleware for all other routes
 app.use((req: Request, res: Response, next: NextFunction) => middleware.accessAuthorization(req, res, next));
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { Axios, AxiosError } from "axios";
 import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import Link from "next/link";
@@ -12,6 +12,7 @@ export default function SignupLayout() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [superAdminCode, setSuperAdminCode] = useState('');
 
   const togglePasswordVisibility = () =>
     setIsPasswordVisible(!isPasswordVisible);
@@ -25,10 +26,12 @@ export default function SignupLayout() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/api/signup", {
+      const response = await axios.post("http://localhost:8080/signup", {
         username: userName,
         email,
         password,
+        confirmPassword,
+        superAdminCode
       });
 
       console.log("Sign up successful:", response.data);
@@ -38,9 +41,15 @@ export default function SignupLayout() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setSuperAdminCode("");
     } catch (error) {
+      const axiosError =error as AxiosError;
       console.error("Sign up error:", error);
-      window.alert("An error occurred during sign up. Please try again.");
+      if (axiosError.response) {
+        console.error("Server responded with:", axiosError.response.data)
+        window.alert(`Error: ${axiosError.message}`);
+      } else { window.alert("An error occurred during sign up. Please try again.");
+       }
     }
   };
 
@@ -98,11 +107,11 @@ export default function SignupLayout() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-4">
         <Input
-          label="Super Admin Code"
+          label="Confirm Password"
           variant="underlined"
-          placeholder="Enter your Super Admin Code"
+          placeholder="Confirm your password"
           endContent={
             <button
               className="focus:outline-none"
@@ -121,6 +130,31 @@ export default function SignupLayout() {
           className="max-w-xs mx-auto"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+      </div>
+      <div className="mb-6">
+        <Input
+          label="Super Admin Code"
+          variant="underlined"
+          placeholder="Enter your Super Admin Code"
+          // endContent={
+          //   <button
+          //     className="focus:outline-none"
+          //     type="button"
+          //     onClick={toggleConfirmPasswordVisibility}
+          //     aria-label="toggle confirm password visibility"
+          //   >
+          //     {isConfirmPasswordVisible ? (
+          //       <IoEyeOutline className="text-2xl text-default-400 pointer-events-none" />
+          //     ) : (
+          //       <IoEyeOffOutline className="text-2xl text-default-400 pointer-events-none" />
+          //     )}
+          //   </button>
+          // }
+          // type={isConfirmPasswordVisible ? "text" : "password"}
+          className="max-w-xs mx-auto"
+          value={superAdminCode}
+          onChange={(e) => setSuperAdminCode(e.target.value)}
         />
       </div>
       <div className="mb-4 flex items-center justify-center">
