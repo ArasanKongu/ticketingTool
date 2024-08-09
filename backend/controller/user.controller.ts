@@ -8,15 +8,15 @@ import { User } from "../models/user.model";
 const ajv = new Ajv();
 
 export default class UserController {
-    async signup(req: Request, res: Response) {
-        let responseObject: ResponseObject = {
-            status: StatusResponse.failed,
-            message: "Invalid Parameter",
-        };
+  async signup(req: Request, res: Response) {
+    let responseObject: ResponseObject = {
+      status: StatusResponse.failed,
+      message: "Invalid Parameter",
+    };
 
-        if (!req.body) {
-            return res.status(400).json(responseObject);
-        }
+    if (!req.body) {
+      return res.status(400).json(responseObject);
+    }
 
         try {
             const body = req.body as {
@@ -36,24 +36,24 @@ export default class UserController {
                 return res.status(400).json(responseObject);
             }
 
-            let schema = require("../schema/user/signup.schema.json");
-            const validate = ajv.compile(schema);
-            if (!validate(body)) {
-                responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
-                return res.status(400).json(responseObject);
-            }
+      let schema = require("../schema/user/signup.schema.json");
+      const validate = ajv.compile(schema);
+      if (!validate(body)) {
+        responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
+        return res.status(400).json(responseObject);
+      }
 
 
 
-            if (password !== confirmPassword) {
-                responseObject.message = "Passwords do not match";
-                return res.status(400).json(responseObject);
-            }
+      if (password !== confirmPassword) {
+        responseObject.message = "Passwords do not match";
+        return res.status(400).json(responseObject);
+      }
 
-            let user = await userRepository.retrieve({
-                email,
-                status: 0
-            });
+      let user = await userRepository.retrieve({
+        email,
+        status: 0,
+      });
 
             if (user) {
                 responseObject.message = "User already exists";
@@ -66,61 +66,61 @@ export default class UserController {
                 password
             };
 
-            user = await userRepository.save(newUser);
+      user = await userRepository.save(newUser);
 
-            if (!user) {
-                responseObject.message = "Error in user creation";
-                return res.status(500).json(responseObject);
-            }
+      if (!user) {
+        responseObject.message = "Error in user creation";
+        return res.status(500).json(responseObject);
+      }
 
-            responseObject.status = StatusResponse.success;
-            responseObject.message = "User created successfully";
+      responseObject.status = StatusResponse.success;
+      responseObject.message = "User created successfully";
 
-            return res.status(201).json(responseObject);
-        } catch (error) {
-            console.error("Error in signup", error);
-            responseObject.message = "Internal Server Error";
-            responseObject.error = error;
-            return res.status(500).json(responseObject);
-        }
+      return res.status(201).json(responseObject);
+    } catch (error) {
+      console.error("Error in signup", error);
+      responseObject.message = "Internal Server Error";
+      responseObject.error = error;
+      return res.status(500).json(responseObject);
+    }
+  }
+
+  async login(req: Request, res: Response) {
+    let responseObject: ResponseObject = {
+      status: StatusResponse.failed,
+      message: "Invalid Parameter",
+    };
+
+    if (!req.body) {
+      return res.status(400).json(responseObject);
     }
 
-    async login(req: Request, res: Response) {
-        let responseObject: ResponseObject = {
-            status: StatusResponse.failed,
-            message: "Invalid Parameter",
-        };
+    try {
+      const { email, password } = req.body as {
+        email: string;
+        password: string;
+      };
+      console.log("Login Request:", { email, password });
 
-        if (!req.body) {
-            return res.status(400).json(responseObject);
-        }
+      let user = await userRepository.login(email, password);
 
-        try {
-            const { email, password } = req.body as {
-                email: string;
-                password: string;
-            };
-            console.log("Login Request:", { email, password });
-
-            let user = await userRepository.login(email, password);
-
-            if (!user) {
-                responseObject.message = "User not found or invalid password";
-                return res.status(400).json(responseObject);
-            }
+      if (!user) {
+        responseObject.message = "User not found or invalid password";
+        return res.status(400).json(responseObject);
+      }
 
             if (password !== user.password) {
                 responseObject.message = "Invalid password";
                 return res.status(400).json(responseObject);
             }
 
-            const token = jwt.sign({ id: user.id }, "your-secret-key", {
-                expiresIn: 86400, // 24 hours
-            });
+      const token = jwt.sign({ id: user.id }, "your-secret-key", {
+        expiresIn: 86400, // 24 hours
+      });
 
-            responseObject.status = StatusResponse.success;
-            responseObject.message = "Login successful";
-            responseObject.data = { accessToken: token };
+      responseObject.status = StatusResponse.success;
+      responseObject.message = "Login successful";
+      responseObject.data = { accessToken: token };
 
             return res.status(200).json(responseObject);
         } catch (error) {

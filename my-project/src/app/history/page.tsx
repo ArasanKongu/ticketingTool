@@ -168,7 +168,7 @@ export default function History() {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 ">
         <div className="flex justify-between gap-3 items-end">
           <Input
             isClearable
@@ -315,7 +315,7 @@ export default function History() {
 
   return (
     <PageLayout>
-        <div className="pt-1 pl-8 font-semibold">History</div>
+        <div className="pt-1 pl-8 font-semibold ">History</div>
     <Table
       isCompact
       removeWrapper
@@ -324,7 +324,7 @@ export default function History() {
       bottomContentPlacement="outside"
       checkboxesProps={{
         classNames: {
-          wrapper: "after:bg-foreground after:text-background text-background",
+          wrapper: "after:bg-foreground after:text-background text-background overflow-y-auto",
         },
       }}
       className="pt-7 pl-8 pr-8 pb-8 "

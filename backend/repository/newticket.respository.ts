@@ -1,5 +1,7 @@
 // repositories/newticket.repository.ts
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { format } from "date-fns";
+
 import { NewTicketModel } from "../models/newticket.model";
 import { connection } from "../api";
 
@@ -8,21 +10,24 @@ export class NewTicketRepository {
     if (!ticket) {
       throw new Error("Invalid Parameter");
     }
+    const formattedDate = ticket.date
+      ? format(new Date(ticket.date), "yyyy-MM-dd HH:mm:ss")
+      : null;
+    const query =
+      "INSERT INTO ticket_tool.new_ticket (type, project, urgency, location, title, description, watchers,date) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+    const values = [
+      ticket.type,
+      ticket.project,
+      ticket.urgency,
+      ticket.location,
+      ticket.title,
+      ticket.description,
+      JSON.stringify(ticket.watchers),
+      formattedDate,
+    ];
 
-    const query = "INSERT INTO new_ticket SET ?";
-    return new Promise(async (resolve, reject) => {
-      (await connection).query<NewTicketModel[]>(query, ticket);
-    });
-  }
-
-  async delete(ticketId: number): Promise<ResultSetHeader> {
-    if (!ticketId) {
-      throw new Error("Invalid Parameters");
-    }
-
-    const query = "DELETE FROM new_ticket WHERE id = ?";
-    return new Promise(async (resolve, reject) => {
-      (await connection).query<ResultSetHeader>(query, [ticketId]);
+    return new Promise<ResultSetHeader>(async (resolve, reject) => {
+      (await connection).query<ResultSetHeader>(query, values);
     });
   }
 
