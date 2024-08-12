@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { ResponseObject, StatusResponse } from "../types/response.type";
 
 export default class AuthenticationMiddleware {
     async accessAuthorization(req: Request, res: Response, next: NextFunction) {

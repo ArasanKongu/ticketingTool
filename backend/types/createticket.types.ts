@@ -1,4 +1,5 @@
 export interface NewTicketObject {
+  status: any;
   id: number;
   userName: string;
   EmpolyeeNo: string;
@@ -8,6 +9,6 @@ export interface NewTicketObject {
   Location: string;
   watchers: string;
   title: string;
-  description: Text;
+  description: string;
   date: Date;
 }

@@ -2,7 +2,7 @@
 import Layout from "../components/user_layout/layout";
 import Login_layout from "../components/user_layout/login_layout";
 
-const Login = () => {
+const HomePage = () => {
   return (
     <Layout> 
       <Login_layout />
@@ -10,4 +10,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default HomePage;

@@ -24,11 +24,11 @@ export default function LoginLayout() {
         email,
         password,
       });
-      const { token } = response.data;
-      localStorage.setItem("token", token);
+      const { accessToken } = response.data.data;
+      localStorage.setItem("token", accessToken);
       setSuccess("Login successful!");
       setError("");
-      window.location.href = "/";
+      window.location.href ="/createTicket";
       setEmail("");
       setPassword("");
     } catch (err) {

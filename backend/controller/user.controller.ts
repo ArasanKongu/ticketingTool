@@ -118,13 +118,16 @@ export default class UserController {
 
       responseObject.status = StatusResponse.success;
       responseObject.message = "Login successful";
+      console.log("Token:", token, user)
       responseObject.data = { accessToken: token };
 
       return res.status(200).json(responseObject);
+
     } catch (error) {
       console.error("Error in login", error);
       responseObject.message = "Internal Server Error";
       responseObject.error = error;
+
       return res.status(500).json(responseObject);
     }
   }

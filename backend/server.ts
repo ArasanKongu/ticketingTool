@@ -39,9 +39,11 @@ app.use((req: Request, res: Response, next: NextFunction) => middleware.accessAu
 
 // Load other routes
 new Routes(app);
+console.log("Routes loaded succesfully")
 
 // Error handling middleware
 app.use((req: Request, res: Response) => {
+    console.log(`Received req for: ${req.path}`)
     let responseObject: ResponseObject = {
         status: StatusResponse.failed,
         message: "Invalid Path",
@@ -51,6 +53,7 @@ app.use((req: Request, res: Response) => {
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(`Received request for: ${req.path}`)
     if (err instanceof SyntaxError && "body" in err) {
         let responseObject: ResponseObject = {
             status: StatusResponse.failed,

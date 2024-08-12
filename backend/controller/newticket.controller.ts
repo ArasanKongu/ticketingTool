@@ -1,15 +1,13 @@
-// controllers/newticket.controller.ts
 import { Request, Response, NextFunction } from "express";
 import { newTicketRepository } from "../repository/newticket.respository";
 import { NewTicketModel } from "../models/newticket.model";
-
 import Ajv from "ajv";
 import SchemaValidate from "../utils/apiErrhandler";
 import { ResponseObject, StatusResponse } from "../types/response.type";
 const ajv = new Ajv();
 
-export class NewTicketController {
-  static async create(req: Request, res: Response, next: NextFunction) {
+export default class NewTicketController {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       let responseObject: ResponseObject = {
         status: StatusResponse.failed,
@@ -40,7 +38,7 @@ export class NewTicketController {
     }
   }
 
-  static async getByEmployeeNo(
+  async getByEmployeeNo(
     req: Request,
     res: Response,
     next: NextFunction
@@ -59,6 +57,16 @@ export class NewTicketController {
       res.status(200).json(tickets);
     } catch (error) {
       console.error("Error in getByEmployeeNo controller:", error); // Log the error
+      next(error);
+    }
+  }
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tickets = await newTicketRepository.getAll();
+      console.log("Tickets:", tickets);
+      res.status(200).json(tickets);
+    } catch (error) {
+      console.error("Error in getAll controller:", error); // Log the error
       next(error);
     }
   }

@@ -42,6 +42,14 @@ export class NewTicketRepository {
     const [results] = await conn.query<NewTicketModel[]>(query, [employeeNo]);
     return results;
   }
+
+  async getAll(): Promise<NewTicketModel[]> {
+    const query = `SELECT * FROM ticket_tool.new_ticket`;
+    console.log("Query:", query);
+    const conn = await connection;
+    const [result] = await conn.query<NewTicketModel[]>(query);
+    return result
+  }
 }
 
 export const newTicketRepository = new NewTicketRepository();
