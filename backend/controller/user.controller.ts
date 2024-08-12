@@ -24,11 +24,12 @@ export default class UserController {
         email: string;
         password: string;
         confirmPassword: string;
-        superAdminCode: string
+        superAdminCode: string;
       };
       console.log("Signup:", body);
 
-      const { username, email, password, confirmPassword, superAdminCode } = body;
+      const { username, email, password, confirmPassword, superAdminCode } =
+        body;
 
       const storedCode = await userRepository.getSuperAdminCode();
       if (superAdminCode !== storedCode) {
@@ -48,23 +49,26 @@ export default class UserController {
         return res.status(400).json(responseObject);
       }
 
-      let user = await userRepository.retrieve({
-        email,
-        status: 0,
-      });
+      // Check if user with the same email or username exists
+      let existingUser = await userRepository.retrieve({ email, status: 0 });
+      if (existingUser) {
+        responseObject.message = "Email already exists";
+        return res.status(400).json(responseObject);
+      }
 
-      if (user) {
-        responseObject.message = "User already exists";
+      existingUser = await userRepository.retrieve({ username });
+      if (existingUser) {
+        responseObject.message = "Username already exists";
         return res.status(400).json(responseObject);
       }
 
       const newUser: User = {
         username,
         email,
-        password
+        password,
       };
 
-      user = await userRepository.save(newUser);
+      const user = await userRepository.save(newUser);
 
       if (!user) {
         responseObject.message = "Error in user creation";
@@ -82,6 +86,81 @@ export default class UserController {
       return res.status(500).json(responseObject);
     }
   }
+
+  // async signup(req: Request, res: Response) {
+  //   let responseObject: ResponseObject = {
+  //     status: StatusResponse.failed,
+  //     message: "Invalid Parameter",
+  //   };
+
+  //   if (!req.body) {
+  //     return res.status(400).json(responseObject);
+  //   }
+
+  //   try {
+  //     const body = req.body as {
+  //       username: string;
+  //       email: string;
+  //       password: string;
+  //       confirmPassword: string;
+  //       superAdminCode: string
+  //     };
+  //     console.log("Signup:", body);
+
+  //     const { username, email, password, confirmPassword, superAdminCode } = body;
+
+  //     const storedCode = await userRepository.getSuperAdminCode();
+  //     if (superAdminCode !== storedCode) {
+  //       responseObject.message = "Invalid Super Admin Code";
+  //       return res.status(400).json(responseObject);
+  //     }
+
+  //     let schema = require("../schema/user/signup.schema.json");
+  //     const validate = ajv.compile(schema);
+  //     if (!validate(body)) {
+  //       responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
+  //       return res.status(400).json(responseObject);
+  //     }
+
+  //     if (password !== confirmPassword) {
+  //       responseObject.message = "Passwords do not match";
+  //       return res.status(400).json(responseObject);
+  //     }
+
+  //     let user = await userRepository.retrieve({
+  //       email,
+  //       status: 0,
+  //     });
+
+  //     if (user) {
+  //       responseObject.message = "User already exists";
+  //       return res.status(400).json(responseObject);
+  //     }
+
+  //     const newUser: User = {
+  //       username,
+  //       email,
+  //       password
+  //     };
+
+  //     user = await userRepository.save(newUser);
+
+  //     if (!user) {
+  //       responseObject.message = "Error in user creation";
+  //       return res.status(500).json(responseObject);
+  //     }
+
+  //     responseObject.status = StatusResponse.success;
+  //     responseObject.message = "User created successfully";
+
+  //     return res.status(201).json(responseObject);
+  //   } catch (error) {
+  //     console.error("Error in signup", error);
+  //     responseObject.message = "Internal Server Error";
+  //     responseObject.error = error;
+  //     return res.status(500).json(responseObject);
+  //   }
+  // }
 
   async login(req: Request, res: Response) {
     let responseObject: ResponseObject = {
@@ -135,16 +214,16 @@ export default class UserController {
     let responseObject: ResponseObject = {
       status: StatusResponse.success,
       message: "Logout successful",
-    }
+    };
     return res.status(200).json(responseObject);
   }
   async setSuperAdmin(req: Request, res: Response) {
     let responseObject: ResponseObject = {
       status: StatusResponse.failed,
       message: "Invalid Parameter",
-    }
+    };
     if (!req.body || !req.body.userId) {
-      return res.status(400).json(responseObject)
+      return res.status(400).json(responseObject);
     }
     try {
       const userId = req.body.userId;

@@ -4,7 +4,7 @@
     "userName": { "type": "string" },
     "EmpolyeeNo": { "type": "string" },
     "type": { "type": "string" },
-
+    "files": { "type": "string", "contentEncoding": "base64" },
     "project": { "type": "string" },
     "urgency": { "type": "string" },
     "location": { "type": "string" },

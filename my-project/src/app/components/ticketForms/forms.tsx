@@ -162,19 +162,26 @@ const GenerateTicketForm: React.FC = () => {
     // Log the selected users array to the console
     console.log("Selected Users:", selected);
   };
-
   const handleSubmit = async () => {
     if (validate()) {
+      // Get the token from localStorage or sessionStorage
+      const token = localStorage.getItem("token"); // Replace "token" with the actual key if different
+  
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/tickets",
-          formData
+          "http://localhost:8080/api/tickets", // Ensure the URL is correct
+          formData,
+          {
+            headers: {
+              "x-access-token": token ? token : "", // Attach the token to the request
+            },
+          }
         );
         console.log("Response:", response.data);
-
+  
         // Show success message
         toast.success("Ticket created successfully!");
-
+  
         // Clear form data
         setFormData({
           type: "",
@@ -187,7 +194,7 @@ const GenerateTicketForm: React.FC = () => {
           description: "",
           date: new Date(),
         });
-
+  
         // Clear selected users
         setSelectedUsers([]);
       } catch (error) {
@@ -196,6 +203,40 @@ const GenerateTicketForm: React.FC = () => {
       }
     }
   };
+  
+  // const handleSubmit = async () => {
+  //   if (validate()) {
+  //     try {
+  //       const response = await axios.post(
+  //         "http://localhost:8080/api/tickets",
+  //         formData
+  //       );
+  //       console.log("Response:", response.data);
+
+  //       // Show success message
+  //       toast.success("Ticket created successfully!");
+
+  //       // Clear form data
+  //       setFormData({
+  //         type: "",
+  //         project: "",
+  //         urgency: "",
+  //         location: "",
+  //         watchers: [],
+  //         attachment: "",
+  //         title: "",
+  //         description: "",
+  //         date: new Date(),
+  //       });
+
+  //       // Clear selected users
+  //       setSelectedUsers([]);
+  //     } catch (error) {
+  //       console.error("Error posting data:", error);
+  //       toast.error("Failed to create ticket. Please try again.");
+  //     }
+  //   }
+  // };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

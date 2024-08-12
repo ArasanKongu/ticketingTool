@@ -24,63 +24,63 @@ export default class AuthenticationMiddleware {
         });
     };
 
-    // async userAuthorization(req: Request, res: Response, next: Function) {
-    //     const authorization = req.headers['authorization'];
-    //     console.log(`Authorization: Authorization Header: ${authorization}`);
+//     // async userAuthorization(req: Request, res: Response, next: Function) {
+//     //     const authorization = req.headers['authorization'];
+//     //     console.log(`Authorization: Authorization Header: ${authorization}`);
 
-    //     let responseObject: ResponseObject = {
-    //         status: StatusResponse.authenticationFailed,
-    //         message: "Invalid Authentication",
-    //     }
+//     //     let responseObject: ResponseObject = {
+//     //         status: StatusResponse.authenticationFailed,
+//     //         message: "Invalid Authentication",
+//     //     }
 
-    //     if (!authorization) {
-    //         console.log('No authorization header provided')
-    //         return res.status(403).send(responseObject);
-    //     }
+//     //     if (!authorization) {
+//     //         console.log('No authorization header provided')
+//     //         return res.status(403).send(responseObject);
+//     //     }
 
-    //     try {
-    //         // try {
-    //         //     const loginToken = await adminLoginTokenRepository.reteriveAll({ token: authorization, status: ActiveStatus.active });
-    //         //     if (!loginToken || loginToken.length <= 0) {
-    //         //         responseObject.message = "Invalid Authentication";
-    //         //         return res.status(403).send(responseObject);
-    //         //     }
+//     //     try {
+//     //         // try {
+//     //         //     const loginToken = await adminLoginTokenRepository.reteriveAll({ token: authorization, status: ActiveStatus.active });
+//     //         //     if (!loginToken || loginToken.length <= 0) {
+//     //         //         responseObject.message = "Invalid Authentication";
+//     //         //         return res.status(403).send(responseObject);
+//     //         //     }
 
-    //         //     const decoded: AuthenticationParams = jsonwebtoken.verify(authorization.toString(), AuthenticationConfig.secret) as AuthenticationParams;
-    //         //     // console.log("Decode Data:", decoded);
+//     //         //     const decoded: AuthenticationParams = jsonwebtoken.verify(authorization.toString(), AuthenticationConfig.secret) as AuthenticationParams;
+//     //         //     // console.log("Decode Data:", decoded);
 
-    //         //     let user: AdminUserModel = await adminUserRepository.reterive({ id: decoded.id, status: 1 });
-    //         //     if (!user) {
-    //         //         responseObject.message = "Invalid Authentication";
-    //         //         return res.status(403).send(responseObject);
-    //         //     }
-    //         //     req.context = { user };
+//     //         //     let user: AdminUserModel = await adminUserRepository.reterive({ id: decoded.id, status: 1 });
+//     //         //     if (!user) {
+//     //         //         responseObject.message = "Invalid Authentication";
+//     //         //         return res.status(403).send(responseObject);
+//     //         //     }
+//     //         //     req.context = { user };
 
-    //         next();
-    //         // } catch (error) {
-    //         //     // console.error("JWT Verify Middleware Error:", error);
+//     //         next();
+//     //         // } catch (error) {
+//     //         //     // console.error("JWT Verify Middleware Error:", error);
 
-    //         //     responseObject.status = StatusResponse.authenticationFailed;
+//     //         //     responseObject.status = StatusResponse.authenticationFailed;
 
-    //         //     if (error instanceof JsonWebTokenError) {
-    //         //         // This block will handle JsonWebTokenError
-    //         //         console.error("JWT Verify Middleware Error:", error.message);
+//     //         //     if (error instanceof JsonWebTokenError) {
+//     //         //         // This block will handle JsonWebTokenError
+//     //         //         console.error("JWT Verify Middleware Error:", error.message);
 
-    //         //         responseObject.error = error.name;
-    //         //         responseObject.message = "Invalid Authentication";
+//     //         //         responseObject.error = error.name;
+//     //         //         responseObject.message = "Invalid Authentication";
 
-    //         //         // Handle the error as needed
-    //         //         return res.status(401).json(responseObject);
-    //         //     }
+//     //         //         // Handle the error as needed
+//     //         //         return res.status(401).json(responseObject);
+//     //         //     }
 
-    //         //     responseObject.message = "Internal Server Error";
-    //         //     return res.status(500).json(responseObject);
-    //         // }
-    //     } catch (error) {
-    //         console.error("User Authentication Middleware Error:", error);
-    //         responseObject.message = "Internal Server Error";
-    //         responseObject.status = StatusResponse.authenticationFailed;
-    //         res.status(500).json(responseObject);
-    //     }
-    // }
+//     //         //     responseObject.message = "Internal Server Error";
+//     //         //     return res.status(500).json(responseObject);
+//     //         // }
+//     //     } catch (error) {
+//     //         console.error("User Authentication Middleware Error:", error);
+//     //         responseObject.message = "Internal Server Error";
+//     //         responseObject.status = StatusResponse.authenticationFailed;
+//     //         res.status(500).json(responseObject);
+//     //     }
+//     // }
 }

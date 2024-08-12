@@ -12,7 +12,7 @@ export default function SignupLayout() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [superAdminCode, setSuperAdminCode] = useState('');
+  const [superAdminCode, setSuperAdminCode] = useState("");
 
   const togglePasswordVisibility = () =>
     setIsPasswordVisible(!isPasswordVisible);
@@ -31,7 +31,7 @@ export default function SignupLayout() {
         email,
         password,
         confirmPassword,
-        superAdminCode
+        superAdminCode,
       });
 
       console.log("Sign up successful:", response.data);
@@ -43,24 +43,25 @@ export default function SignupLayout() {
       setConfirmPassword("");
       setSuperAdminCode("");
     } catch (error) {
-      const axiosError =error as AxiosError;
+      const axiosError = error as AxiosError;
       console.error("Sign up error:", error);
       if (axiosError.response) {
-        console.error("Server responded with:", axiosError.response.data)
+        console.error("Server responded with:", axiosError.response.data);
         window.alert(`Error: ${axiosError.message}`);
-      } else { window.alert("An error occurred during sign up. Please try again.");
-       }
+      } else {
+        window.alert("An error occurred during sign up. Please try again.");
+      }
     }
   };
 
   return (
-    <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+    <div className="w-full md:w-1/2 p-2 flex flex-col justify-center">
       <div className="mb-8">
         <h2 className="text-center font-bold text-orange-800">
           Nexware Technologies
         </h2>
       </div>
-      <div className="mb-4">
+      <div className="mb-3">
         <Input
           type="text"
           label="User Name"
@@ -71,7 +72,7 @@ export default function SignupLayout() {
           onChange={(e) => setUserName(e.target.value)}
         />
       </div>
-      <div className="mb-4">
+      <div className="mb-3">
         <Input
           type="email"
           label="Email"
@@ -82,7 +83,7 @@ export default function SignupLayout() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-3">
         <Input
           label="Password"
           variant="underlined"
@@ -107,7 +108,7 @@ export default function SignupLayout() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="mb-4">
+      <div className="mb-3">
         <Input
           label="Confirm Password"
           variant="underlined"
@@ -132,7 +133,7 @@ export default function SignupLayout() {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-3">
         <Input
           label="Super Admin Code"
           variant="underlined"

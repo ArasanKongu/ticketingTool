@@ -6,8 +6,8 @@ export interface NewTicketObject {
   type: string;
   project: string;
   urgency: string;
-  Location: string;
-  watchers: string;
+  location: string;
+  watchers: string[];
   title: string;
   description: string;
   date: Date;

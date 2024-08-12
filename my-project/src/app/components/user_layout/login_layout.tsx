@@ -25,10 +25,11 @@ export default function LoginLayout() {
         password,
       });
       const { accessToken } = response.data.data;
+      console.log("response", response);
       localStorage.setItem("token", accessToken);
       setSuccess("Login successful!");
       setError("");
-      window.location.href ="/createTicket";
+      window.location.href = "/createTicket";
       setEmail("");
       setPassword("");
     } catch (err) {

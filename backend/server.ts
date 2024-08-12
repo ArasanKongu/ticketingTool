@@ -1,7 +1,7 @@
 import express, { Request, Application, NextFunction, Response } from "express";
 import cors, { CorsOptions } from "cors";
 import Routes from "./routes";
-import 'dotenv/config';
+import "dotenv/config";
 import { ResponseObject, StatusResponse } from "./types/response.type";
 import AuthenticationMiddleware from "./middleware/auth.middleware";
 
@@ -10,7 +10,7 @@ const middleware = new AuthenticationMiddleware();
 
 // CORS configuration
 const corsOptions: CorsOptions = {
-    origin: "http://localhost:3000"
+  origin: "http://localhost:3000",
 };
 
 // Middleware configuration
@@ -67,12 +67,14 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 // Start the server
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
-app.listen(PORT, "localhost", function () {
+app
+  .listen(PORT, "localhost", function () {
     console.log(`Server is running on port ${PORT}.`);
-}).on("error", (err: any) => {
+  })
+  .on("error", (err: any) => {
     if (err.code === "EADDRINUSE") {
-        console.log("Error: address already in use");
+      console.log("Error: address already in use");
     } else {
-        console.log(err);
+      console.log(err);
     }
-});
+  });

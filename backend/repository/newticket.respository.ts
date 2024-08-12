@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { NewTicketModel } from "../models/newticket.model";
 import { connection } from "../api";
 
+
 export class NewTicketRepository {
   async create(ticket: NewTicketModel): Promise<ResultSetHeader> {
     if (!ticket) {
@@ -14,7 +15,7 @@ export class NewTicketRepository {
       ? format(new Date(ticket.date), "yyyy-MM-dd HH:mm:ss")
       : null;
     const query =
-      "INSERT INTO ticket_tool.new_ticket (type, project, urgency, location, title, description, watchers,date) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+      "INSERT INTO ticket_tool.new_ticket (type, project, urgency, location, title, description, watchers,date,files) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
       ticket.type,
       ticket.project,
@@ -24,6 +25,7 @@ export class NewTicketRepository {
       ticket.description,
       JSON.stringify(ticket.watchers),
       formattedDate,
+      ticket.files,
     ];
 
     return new Promise<ResultSetHeader>(async (resolve, reject) => {
