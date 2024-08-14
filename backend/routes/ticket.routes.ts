@@ -13,6 +13,7 @@ class TicketRoutes{
         this.router.get('/history', this.controller.getAll.bind(this.controller))
         this.router.post('/tickets', this.controller.create)
         this.router.get('/employee/:EmployeeNo', this.controller.getByEmployeeNo)
+        this.router.get('/employeeDetails', this.controller.getAllEmployee)
 }
 // const router = express.Router();
 

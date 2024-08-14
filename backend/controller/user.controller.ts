@@ -5,6 +5,8 @@ import { ResponseObject, StatusResponse } from "../types/response.type";
 import SchemaValidate from "../utils/apiErrhandler";
 import { userRepository } from "../repository/user.repository";
 import { User } from "../models/user.model";
+import bcrypt from "bcrypt";
+
 const ajv = new Ajv();
 
 export default class UserController {
@@ -87,81 +89,6 @@ export default class UserController {
     }
   }
 
-  // async signup(req: Request, res: Response) {
-  //   let responseObject: ResponseObject = {
-  //     status: StatusResponse.failed,
-  //     message: "Invalid Parameter",
-  //   };
-
-  //   if (!req.body) {
-  //     return res.status(400).json(responseObject);
-  //   }
-
-  //   try {
-  //     const body = req.body as {
-  //       username: string;
-  //       email: string;
-  //       password: string;
-  //       confirmPassword: string;
-  //       superAdminCode: string
-  //     };
-  //     console.log("Signup:", body);
-
-  //     const { username, email, password, confirmPassword, superAdminCode } = body;
-
-  //     const storedCode = await userRepository.getSuperAdminCode();
-  //     if (superAdminCode !== storedCode) {
-  //       responseObject.message = "Invalid Super Admin Code";
-  //       return res.status(400).json(responseObject);
-  //     }
-
-  //     let schema = require("../schema/user/signup.schema.json");
-  //     const validate = ajv.compile(schema);
-  //     if (!validate(body)) {
-  //       responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
-  //       return res.status(400).json(responseObject);
-  //     }
-
-  //     if (password !== confirmPassword) {
-  //       responseObject.message = "Passwords do not match";
-  //       return res.status(400).json(responseObject);
-  //     }
-
-  //     let user = await userRepository.retrieve({
-  //       email,
-  //       status: 0,
-  //     });
-
-  //     if (user) {
-  //       responseObject.message = "User already exists";
-  //       return res.status(400).json(responseObject);
-  //     }
-
-  //     const newUser: User = {
-  //       username,
-  //       email,
-  //       password
-  //     };
-
-  //     user = await userRepository.save(newUser);
-
-  //     if (!user) {
-  //       responseObject.message = "Error in user creation";
-  //       return res.status(500).json(responseObject);
-  //     }
-
-  //     responseObject.status = StatusResponse.success;
-  //     responseObject.message = "User created successfully";
-
-  //     return res.status(201).json(responseObject);
-  //   } catch (error) {
-  //     console.error("Error in signup", error);
-  //     responseObject.message = "Internal Server Error";
-  //     responseObject.error = error;
-  //     return res.status(500).json(responseObject);
-  //   }
-  // }
-
   async login(req: Request, res: Response) {
     let responseObject: ResponseObject = {
       status: StatusResponse.failed,
@@ -192,16 +119,15 @@ export default class UserController {
       }
 
       const token = jwt.sign({ id: user.id }, "your-secret-key", {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 86400,
       });
 
       responseObject.status = StatusResponse.success;
       responseObject.message = "Login successful";
-      console.log("Token:", token, user)
-      responseObject.data = { accessToken: token };
+
+      responseObject.data = { accessToken: token, User: user };
 
       return res.status(200).json(responseObject);
-
     } catch (error) {
       console.error("Error in login", error);
       responseObject.message = "Internal Server Error";
@@ -210,6 +136,7 @@ export default class UserController {
       return res.status(500).json(responseObject);
     }
   }
+
   async logout(req: Request, res: Response) {
     let responseObject: ResponseObject = {
       status: StatusResponse.success,

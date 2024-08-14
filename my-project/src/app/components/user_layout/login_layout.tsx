@@ -11,6 +11,7 @@ export default function LoginLayout() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -24,16 +25,18 @@ export default function LoginLayout() {
         email,
         password,
       });
-      const { accessToken } = response.data.data;
-      console.log("response", response);
+      const { accessToken, User } = response.data.data;
+      console.log("response", User);
+      setUser(User);
       localStorage.setItem("token", accessToken);
+      localStorage.setItem("user", JSON.stringify(User));
       setSuccess("Login successful!");
       setError("");
-      window.location.href = "/createTicket";
+      window.location.href = "/createTicket   ";
       setEmail("");
       setPassword("");
     } catch (err) {
-      setError("Invalid credentials. Please try again.");
+      setError("Invalid credentials. Please try again."); 
       setSuccess("");
     } finally {
       setLoading(false);
@@ -111,7 +114,7 @@ export default function LoginLayout() {
           Forgot password?
         </Link>
       </div>
-      <div className="text-center">
+      <div className="text-center">  
         <p>
           New to Lovebirds?
           <Link href="/signup" className="text-sky-600 underline">

@@ -14,3 +14,11 @@ export interface NewTicketModel extends RowDataPacket {
   description: string;
   date?: Date;
 }
+
+export interface Profile extends RowDataPacket {
+  name: string;
+  emp_no: string;
+  mobile_no: string;
+  email: string;
+  status: number;
+}

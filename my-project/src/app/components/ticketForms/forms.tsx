@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -18,13 +18,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 type User = {
   id: number;
+  emp_no: string;
   name: string;
-  role: string;
-  team: string;
-  status: string;
-  age: string;
-  avatar: string;
   email: string;
+  mobile_no: string;
+  status: number;
 };
 
 interface FormData {
@@ -40,6 +38,7 @@ interface FormData {
 }
 
 const GenerateTicketForm: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<FormData>({
     type: "",
     project: "",
@@ -51,7 +50,7 @@ const GenerateTicketForm: React.FC = () => {
     description: "",
     date: new Date(),
   });
-
+  const [users, setUsers] = useState<User[]>([]);
   const [errors, setErrors] = useState({
     type: "",
     project: "",
@@ -63,6 +62,37 @@ const GenerateTicketForm: React.FC = () => {
   });
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+  useEffect(() => {
+    // Fetch users from the API
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Get the token from localStorage
+        const user = localStorage.getItem("");
+
+        const response = await axios.get(
+          "http://localhost:8080/api/employeeDetails",
+          {
+            headers: {
+              "x-access-token": token ? token : "", // Set the Authorization header
+            },
+          }
+        );
+        setUsers(response.data);
+        console.log("Fetched Users:", response.data); // Log the fetched users
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        toast.error("Failed to fetch users. Please try again.");
+      }
+    };
+
+    fetchUsers();
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -164,13 +194,26 @@ const GenerateTicketForm: React.FC = () => {
   };
   const handleSubmit = async () => {
     if (validate()) {
-      // Get the token from localStorage or sessionStorage
+      // Get the token, username, and email from localStorage
       const token = localStorage.getItem("token"); // Replace "token" with the actual key if different
-  
+      const storedUser = localStorage.getItem("user");
+      let userName = "";
+      let EmpolyeeNo = "";
+
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        userName = parsedUser.profile_name || "";
+        EmpolyeeNo = parsedUser.emp_no || "";
+      }
+
       try {
         const response = await axios.post(
           "http://localhost:8080/api/tickets", // Ensure the URL is correct
-          formData,
+          {
+            ...formData,
+            userName, // Include the username in the form data
+            EmpolyeeNo, // Include the email in the form data
+          },
           {
             headers: {
               "x-access-token": token ? token : "", // Attach the token to the request
@@ -178,10 +221,10 @@ const GenerateTicketForm: React.FC = () => {
           }
         );
         console.log("Response:", response.data);
-  
+
         // Show success message
         toast.success("Ticket created successfully!");
-  
+
         // Clear form data
         setFormData({
           type: "",
@@ -194,7 +237,7 @@ const GenerateTicketForm: React.FC = () => {
           description: "",
           date: new Date(),
         });
-  
+
         // Clear selected users
         setSelectedUsers([]);
       } catch (error) {
@@ -203,40 +246,6 @@ const GenerateTicketForm: React.FC = () => {
       }
     }
   };
-  
-  // const handleSubmit = async () => {
-  //   if (validate()) {
-  //     try {
-  //       const response = await axios.post(
-  //         "http://localhost:8080/api/tickets",
-  //         formData
-  //       );
-  //       console.log("Response:", response.data);
-
-  //       // Show success message
-  //       toast.success("Ticket created successfully!");
-
-  //       // Clear form data
-  //       setFormData({
-  //         type: "",
-  //         project: "",
-  //         urgency: "",
-  //         location: "",
-  //         watchers: [],
-  //         attachment: "",
-  //         title: "",
-  //         description: "",
-  //         date: new Date(),
-  //       });
-
-  //       // Clear selected users
-  //       setSelectedUsers([]);
-  //     } catch (error) {
-  //       console.error("Error posting data:", error);
-  //       toast.error("Failed to create ticket. Please try again.");
-  //     }
-  //   }
-  // };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -414,7 +423,7 @@ const GenerateTicketForm: React.FC = () => {
                       alt={user.name}
                       className="flex-shrink-0"
                       size="sm"
-                      src={user.avatar}
+                      // src={user.avatar}
                     />
                     <div className="flex flex-col">
                       <span className="text-small">{user.name}</span>
@@ -446,7 +455,7 @@ const GenerateTicketForm: React.FC = () => {
                 type="file"
                 multiple
                 onChange={handleFileChange}
-                className="mt-1 block w-full"
+                className="mt-1 block w-full "
               />
             </div>
             {formData.attachment && (

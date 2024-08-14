@@ -38,11 +38,7 @@ export default class NewTicketController {
     }
   }
 
-  async getByEmployeeNo(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async getByEmployeeNo(req: Request, res: Response, next: NextFunction) {
     try {
       const employeeNo = req.params.EmployeeNo;
 
@@ -63,6 +59,17 @@ export default class NewTicketController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const tickets = await newTicketRepository.getAll();
+      console.log("Tickets:", tickets);
+      res.status(200).json(tickets);
+    } catch (error) {
+      console.error("Error in getAll controller:", error); // Log the error
+      next(error);
+    }
+  }
+
+  async getAllEmployee(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tickets = await newTicketRepository.getAllEmpoyee();
       console.log("Tickets:", tickets);
       res.status(200).json(tickets);
     } catch (error) {

@@ -2,9 +2,8 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { format } from "date-fns";
 
-import { NewTicketModel } from "../models/newticket.model";
+import { NewTicketModel, Profile } from "../models/newticket.model";
 import { connection } from "../api";
-
 
 export class NewTicketRepository {
   async create(ticket: NewTicketModel): Promise<ResultSetHeader> {
@@ -15,8 +14,10 @@ export class NewTicketRepository {
       ? format(new Date(ticket.date), "yyyy-MM-dd HH:mm:ss")
       : null;
     const query =
-      "INSERT INTO ticket_tool.new_ticket (type, project, urgency, location, title, description, watchers,date,files) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+      "INSERT INTO ticket_tool.new_ticket (userName,EmpolyeeNo,type, project, urgency, location, title, description, watchers,date,files) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)";
     const values = [
+      ticket.userName,
+      ticket.EmpolyeeNo,
       ticket.type,
       ticket.project,
       ticket.urgency,
@@ -27,7 +28,7 @@ export class NewTicketRepository {
       formattedDate,
       ticket.files,
     ];
-
+    console.log("smdms", values);
     return new Promise<ResultSetHeader>(async (resolve, reject) => {
       (await connection).query<ResultSetHeader>(query, values);
     });
@@ -50,7 +51,22 @@ export class NewTicketRepository {
     console.log("Query:", query);
     const conn = await connection;
     const [result] = await conn.query<NewTicketModel[]>(query);
-    return result
+    return result;
+  }
+
+  async getAllEmpoyee(): Promise<Profile[]> {
+    const query = `SELECT * FROM ticket_tool.user_profile;`;
+    console.log("Executing Query:", query);
+
+    try {
+      const conn = await connection;
+      const [result] = await conn.query<Profile[]>(query);
+      console.log("Query Result:", result);
+      return result;
+    } catch (error) {
+      console.error("Error fetching employee profiles:", error);
+      throw new Error("Failed to fetch employee profiles");
+    }
   }
 }
 
