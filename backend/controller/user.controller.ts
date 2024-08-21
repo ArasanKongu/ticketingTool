@@ -4,8 +4,7 @@ import jwt from "jsonwebtoken";
 import { ResponseObject, StatusResponse } from "../types/response.type";
 import SchemaValidate from "../utils/apiErrhandler";
 import { userRepository } from "../repository/user.repository";
-import { User } from "../models/user.model";
-import bcrypt from "bcrypt";
+import User from "../models/user.model";
 
 const ajv = new Ajv();
 

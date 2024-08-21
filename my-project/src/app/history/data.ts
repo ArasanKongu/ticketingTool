@@ -17,35 +17,38 @@ export { statusOptions };
 export interface GetHistoryParams {
 id?: number;
 userName? : string;
-watchers?: string;
-description?: string;
-date?: Date
+// watchers?: string;
+// description?: string;
+// date?: Date;
 EmployeeNo?: string;
-location?: string;
-project?: string;
-title?: string;
-type?: string;
-urgency?: string;
-status: number;
+// location?: string;
+// project?: string;
+// title?: string;
+// type?: string;
+// urgency?: string;
+// status: number;
 }
 
-export async function GetHistoryData(params :GetHistoryParams ) {
+export async function GetHistoryData(params :GetHistoryParams, EmployeeNo: string ) {
   const token = cookies().get("token")?.value;
 
-  if (token == null || token?.length == 0) {
+  if (!token) {
     console.error("Token is empty in Server side Components");
-    return [];
+    return {status: StatusResponse.failed, data: []};
   }
   try {
+    const tokens = localStorage.getItem("token"); 
     const res = await axiosInstance(token).get(
-      "http://localhost:8080/api/ticket/history",
+      
+      `http://localhost:8080/api/employee/${EmployeeNo}`,
       {
         params: params,
-        maxBodyLength: Infinity,
+        // maxBodyLength: Infinity,
         headers: { "x-access-key": process.env.ACCESS_KEY ?? "" },
       }
     );
     const response = res.data;
+    console.log("Data table:", response)
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -54,8 +57,10 @@ export async function GetHistoryData(params :GetHistoryParams ) {
 
       return error.response?.data;
     }
+    console.error("Error fetching data:", error)
     return {
       status: StatusResponse.failed,
+      data: [],
       message: "Failed to get data",
     };
   }

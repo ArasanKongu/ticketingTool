@@ -1,6 +1,8 @@
+import PageLayout from "../components/navbar&Footerlayout/layout";
 
-export default function HomePage () {
+export default function Dashboard () {
     return (
-        <div className="bg-orange-300">Dashboard</div>
+        <PageLayout><div>Dashboard</div></PageLayout>
+        
     )
 }

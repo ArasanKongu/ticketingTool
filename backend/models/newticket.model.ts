@@ -4,7 +4,7 @@ import { RowDataPacket } from "mysql2";
 export interface NewTicketModel extends RowDataPacket {
   id: number;
   userName: string;
-  EmpolyeeNo: string;
+  EmployeeNo: string;
   type: string;
   project: string;
   urgency: string;

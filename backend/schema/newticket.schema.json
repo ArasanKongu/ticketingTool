@@ -2,7 +2,7 @@
   "type": "object",
   "properties": {
     "userName": { "type": "string" },
-    "EmpolyeeNo": { "type": "string" },
+    "EmployeeNo": { "type": "string" },
     "type": { "type": "string" },
     "files": { "type": "string", "contentEncoding": "base64" },
     "project": { "type": "string" },
@@ -10,7 +10,8 @@
     "location": { "type": "string" },
     "watchers": { "type": "array" },
     "title": { "type": "string" },
-    "description": { "type": "string" }
+    "description": { "type": "string" },
+    "status":{"type":"string"}
   },
   "required": ["type", "project", "urgency", "location", "title", "description"]
 }

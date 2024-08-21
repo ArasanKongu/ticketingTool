@@ -1,12 +1,6 @@
-import {
-  createPool,
-  Pool,
-  RowDataPacket,
-  ResultSetHeader,
-} from "mysql2/promise";
-import { User, UserProfile } from "../models/user.model";
-import "dotenv/config";
-import bcrypt from "bcrypt";
+import { createPool, Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import  User  from '../models/user.model';
+import 'dotenv/config';
 
 // Create a pool of connections
 const pool = createPool({
@@ -89,7 +83,7 @@ class UserRepository {
   }
 
   async login(email: string, password: string): Promise<User | null> {
-    const query = `SELECT u.id AS user_id,u.username,u.email,u.password,up.name AS profile_name,up.emp_no,up.mobile_no,up.status FROM ticket_tool.users u JOIN ticket_tool.user_profile up ON u.email= up.email WHERE u.email = ?`;
+    const query = `SELECT u.id AS user_id,u.username,u.email,u.password,up.name AS profile_name,up.EmployeeNo,up.mobile_no,up.status FROM ticket_tool.users u JOIN ticket_tool.user_profile up ON u.email= up.email WHERE u.email = ?`;
     const [rows] = await this.pool.query<RowDataPacket[]>(query, [email]);
 
     if (rows.length === 0) {

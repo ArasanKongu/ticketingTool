@@ -2,7 +2,7 @@ export interface NewTicketObject {
   status: any;
   id: number;
   userName: string;
-  EmpolyeeNo: string;
+  EmployeeNo: string;
   type: string;
   project: string;
   urgency: string;

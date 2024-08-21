@@ -11,14 +11,14 @@ import {
   SelectedItems,
   SharedSelection,
 } from "@nextui-org/react";
-import { Location, Project, Types, Urgency, users } from "./data";
+import { Location, Project, Types, Urgency } from "./data";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type User = {
   id: number;
-  emp_no: string;
+  EmployeeNo: string;
   name: string;
   email: string;
   mobile_no: string;
@@ -74,6 +74,12 @@ const GenerateTicketForm: React.FC = () => {
       try {
         const token = localStorage.getItem("token"); // Get the token from localStorage
         const user = localStorage.getItem("");
+
+        if(!token){
+          toast.error("You are not logged in. Redirecting to login page.");
+          window.location.href = "/login";
+          return;
+        }
 
         const response = await axios.get(
           "http://localhost:8080/api/employeeDetails",
@@ -198,12 +204,12 @@ const GenerateTicketForm: React.FC = () => {
       const token = localStorage.getItem("token"); // Replace "token" with the actual key if different
       const storedUser = localStorage.getItem("user");
       let userName = "";
-      let EmpolyeeNo = "";
+      let EmployeeNo = "";
 
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         userName = parsedUser.profile_name || "";
-        EmpolyeeNo = parsedUser.emp_no || "";
+        EmployeeNo = parsedUser.emp_no || "";
       }
 
       try {
@@ -212,7 +218,7 @@ const GenerateTicketForm: React.FC = () => {
           {
             ...formData,
             userName, // Include the username in the form data
-            EmpolyeeNo, // Include the email in the form data
+            EmployeeNo, // Include the email in the form data
           },
           {
             headers: {

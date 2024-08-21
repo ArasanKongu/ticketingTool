@@ -4,7 +4,18 @@ import Routes from "./routes";
 import "dotenv/config";
 import { ResponseObject, StatusResponse } from "./types/response.type";
 import AuthenticationMiddleware from "./middleware/auth.middleware";
+import { Profile } from "./models/newticket.model";
 
+// Extend the Request interface to include your custom parameter
+declare global {
+  namespace Express {
+    interface Request {
+      context: {
+        user: Profile; // Define your custom parameter type here
+      }
+    }
+  }
+}
 const app: Application = express();
 const middleware = new AuthenticationMiddleware();
 

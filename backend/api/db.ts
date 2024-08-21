@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+// import { Pool } from "mysql2/typings/mysql/lib/Pool";
 
 dotenv.config();
 

@@ -14,10 +14,10 @@ export class NewTicketRepository {
       ? format(new Date(ticket.date), "yyyy-MM-dd HH:mm:ss")
       : null;
     const query =
-      "INSERT INTO ticket_tool.new_ticket (userName,EmpolyeeNo,type, project, urgency, location, title, description, watchers,date,files) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)";
+      "INSERT INTO ticket_tool.new_ticket (userName,EmployeeNo,type, project, urgency, location, title, description, watchers,date) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)";
     const values = [
       ticket.userName,
-      ticket.EmpolyeeNo,
+      ticket.EmployeeNo,
       ticket.type,
       ticket.project,
       ticket.urgency,
@@ -26,7 +26,7 @@ export class NewTicketRepository {
       ticket.description,
       JSON.stringify(ticket.watchers),
       formattedDate,
-      ticket.files,
+      // ticket.files,
     ];
     console.log("smdms", values);
     return new Promise<ResultSetHeader>(async (resolve, reject) => {
@@ -39,7 +39,7 @@ export class NewTicketRepository {
       throw new Error("Invalid Parameter");
     }
 
-    const query = `SELECT * FROM ticket_tool.new_ticket WHERE EmpolyeeNo = '${employeeNo}'`;
+    const query = `SELECT * FROM ticket_tool.new_ticket WHERE EmployeeNo = '${employeeNo}'`;
     console.log(query);
     const conn = await connection;
     const [results] = await conn.query<NewTicketModel[]>(query, [employeeNo]);
