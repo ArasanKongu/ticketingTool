@@ -13,13 +13,11 @@ export default class NewTicketController {
         status: StatusResponse.failed,
         message: "Invalid Parameter",
       };
-
       const schema = require("../schema/newticket.schema.json");
       const validate = ajv.compile(schema);
-
       console.log(schema, "schema", req.body);
       const valid = validate(req.body);
-      console.log("Request body:", valid); // Log the request body
+      console.log("Request body:", valid); 
       if (!valid) {
         responseObject.error = SchemaValidate.schemaErrObject(validate.errors);
         console.log("hii");

@@ -37,7 +37,7 @@ interface FormData {
   date: Date;
 }
 
-const GenerateTicketForm: React.FC = () => {
+export default function GenerateTicketForm() {
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<FormData>({
     type: "",
@@ -62,20 +62,20 @@ const GenerateTicketForm: React.FC = () => {
   });
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [key, setKey] = useState(0); // Use key to force re-render
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
   useEffect(() => {
-    // Fetch users from the API
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get the token from localStorage
-        const user = localStorage.getItem("");
-
-        if(!token){
+        const token = localStorage.getItem("token");
+        if (!token) {
           toast.error("You are not logged in. Redirecting to login page.");
           window.location.href = "/login";
           return;
@@ -85,12 +85,12 @@ const GenerateTicketForm: React.FC = () => {
           "http://localhost:8080/api/employeeDetails",
           {
             headers: {
-              "x-access-token": token ? token : "", // Set the Authorization header
+              "x-access-token": token ? token : "",
             },
           }
         );
         setUsers(response.data);
-        console.log("Fetched Users:", response.data); // Log the fetched users
+        console.log("Fetched Users:", response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
         toast.error("Failed to fetch users. Please try again.");
@@ -98,13 +98,9 @@ const GenerateTicketForm: React.FC = () => {
     };
 
     fetchUsers();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
-    >
-  ) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -176,32 +172,30 @@ const GenerateTicketForm: React.FC = () => {
     let selectedKeys: string[] = [];
 
     if (keys === "all") {
-      // Handle case where all users are selected
       selectedKeys = users.map((user) => user.id.toString());
     } else if (keys instanceof Set) {
-      // Handle case where keys is a Set of keys
       selectedKeys = Array.from(keys) as string[];
     }
 
-    // Filter users based on selected keys
     const selected = users.filter((user) =>
       selectedKeys.includes(user.id.toString())
     );
 
-    // Update the selected users array and watchers field in formData
     setSelectedUsers(selected);
     setFormData((prevFormData) => ({
       ...prevFormData,
       watchers: selected.map((user) => user.email.toString()),
     }));
-
-    // Log the selected users array to the console
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      watchers: "",
+    }));
     console.log("Selected Users:", selected);
   };
+
   const handleSubmit = async () => {
     if (validate()) {
-      // Get the token, username, and email from localStorage
-      const token = localStorage.getItem("token"); // Replace "token" with the actual key if different
+      const token = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
       let userName = "";
       let EmployeeNo = "";
@@ -209,29 +203,27 @@ const GenerateTicketForm: React.FC = () => {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         userName = parsedUser.profile_name || "";
-        EmployeeNo = parsedUser.EmployeeNo || "";
+        EmployeeNo = parsedUser.emp_no || "";
       }
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/tickets", // Ensure the URL is correct
+          "http://localhost:8080/api/tickets",
           {
             ...formData,
-            userName, // Include the username in the form data
-            EmployeeNo, // Include the email in the form data
+            userName,
+            EmployeeNo,
           },
           {
             headers: {
-              "x-access-token": token ? token : "", // Attach the token to the request
+              "x-access-token": token ? token : "",
             },
           }
         );
         console.log("Response:", response.data);
 
-        // Show success message
         toast.success("Ticket created successfully!");
 
-        // Clear form data
         setFormData({
           type: "",
           project: "",
@@ -244,8 +236,8 @@ const GenerateTicketForm: React.FC = () => {
           date: new Date(),
         });
 
-        // Clear selected users
         setSelectedUsers([]);
+        handleClear(); // Clear the Select component
       } catch (error) {
         console.error("Error posting data:", error);
         toast.error("Failed to create ticket. Please try again.");
@@ -263,6 +255,22 @@ const GenerateTicketForm: React.FC = () => {
     }
   };
 
+  const handleClear = () => {
+    setFormData({
+      type: "",
+      project: "",
+      urgency: "",
+      location: "",
+      watchers: [],
+      attachment: "",
+      title: "",
+      description: "",
+      date: new Date(),
+    });
+    setSelectedUsers([]);
+    setKey((prevKey) => prevKey + 1); // Update the key to force re-render of Select components
+  };
+
   return (
     <div className="w-[45rem] max-w-screen-lg mx-auto p-6 bg-white shadow-md rounded-lg max-h-[80vh] overflow-y-auto scrollbar-hide">
       <ToastContainer />
@@ -272,6 +280,7 @@ const GenerateTicketForm: React.FC = () => {
           {/* Type */}
           <div>
             <Select
+              key={key} // Use key to force re-render
               isRequired
               name="type"
               label="Type"
@@ -296,6 +305,7 @@ const GenerateTicketForm: React.FC = () => {
           {/* Project */}
           <div>
             <Select
+              key={key} // Use key to force re-render
               isRequired
               name="project"
               label="Project"
@@ -320,6 +330,7 @@ const GenerateTicketForm: React.FC = () => {
           {/* Urgency */}
           <div>
             <Select
+              key={key} // Use key to force re-render
               isRequired
               name="urgency"
               label="Urgency"
@@ -344,6 +355,7 @@ const GenerateTicketForm: React.FC = () => {
           {/* Location */}
           <div>
             <Select
+              key={key} // Use key to force re-render
               isRequired
               name="location"
               label="Location"
@@ -398,8 +410,9 @@ const GenerateTicketForm: React.FC = () => {
           </div>
 
           {/* Assigned to (Watchers) */}
-          <div className="md:col-span-2 mt-3">
+          {/* <div className="md:col-span-2 mt-3">
             <Select
+              key={key} // Use key to force re-render
               items={users}
               label="Assigned to"
               variant="underlined"
@@ -444,6 +457,54 @@ const GenerateTicketForm: React.FC = () => {
             {errors.watchers && (
               <p className="text-red-500 text-sm">{errors.watchers}</p>
             )}
+          </div> */}
+          <div className="md:col-span-2 mt-3">
+            <Select
+              key={key}
+              isRequired
+              items={users}
+              label="Assigned to"
+              variant="underlined"
+              isMultiline={true}
+              selectionMode="multiple"
+              placeholder="Select a user"
+              labelPlacement="inside"
+              classNames={{
+                base: "max-w-2xl",
+                trigger: "min-h-12 py-2",
+              }}
+              onSelectionChange={handleSelectionChange}
+              renderValue={(items: SelectedItems<User>) => {
+                return (
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((item: any) => (
+                      <Chip key={item.key}>{item.data.name}</Chip>
+                    ))}
+                  </div>
+                );
+              }}
+            >
+              {(user) => (
+                <SelectItem key={user.id.toString()} textValue={user.name}>
+                  <div className="flex gap-2 items-center">
+                    <Avatar
+                      alt={user.name}
+                      className="flex-shrink-0"
+                      size="sm"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-small">{user.name}</span>
+                      <span className="text-tiny text-default-400">
+                        {user.email}
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+            {errors.watchers && (
+              <p className="text-red-500 text-sm">{errors.watchers}</p>
+            )}
           </div>
 
           {/* Attachment */}
@@ -473,10 +534,11 @@ const GenerateTicketForm: React.FC = () => {
           <Button type="button" color="warning" onClick={handleSubmit}>
             Submit Ticket
           </Button>
+          <Button type="button" color="default" onClick={handleClear}>
+            Clear Form
+          </Button>
         </div>
       </form>
     </div>
   );
-};
-
-export default GenerateTicketForm;
+}

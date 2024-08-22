@@ -89,7 +89,7 @@ export default class UserController {
   }
 
   async login(req: Request, res: Response) {
-    let responseObject: ResponseObject = {
+      let responseObject: ResponseObject = {
       status: StatusResponse.failed,
       message: "Invalid Parameter",
     };

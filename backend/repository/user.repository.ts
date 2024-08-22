@@ -18,27 +18,6 @@ class UserRepository {
   constructor() {
     this.pool = pool;
   }
-
-  // async retrieve(filter: Partial<User>): Promise<User | undefined> {
-  //     const { email, status } = filter;
-  //     let query = "SELECT * FROM users WHERE 1=1";
-  //     const conditions: string[] = [];
-  //     const params: any[] = [];
-
-  //     if (email) {
-  //         conditions.push("email = ?");
-  //         params.push(email);
-  //     }
-  //     if (status !== undefined) {
-  //         conditions.push("status = ?");
-  //         params.push(status);
-  //     }
-
-  //     if (conditions.length) query += ' AND ' + conditions.join(' AND ');
-
-  //     const [rows] = await this.pool.query<RowDataPacket[]>(query, params);
-  //     return rows[0] as User; // Cast the result to User
-  // }
   async retrieve(filter: Partial<User>): Promise<User | undefined> {
     const { email, username, status } = filter;
     let query = "SELECT * FROM users WHERE 1=1";
