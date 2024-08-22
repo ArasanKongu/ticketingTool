@@ -41,6 +41,9 @@ export default class NewTicketController {
   async getByEmployeeNo(req: Request, res: Response, next: NextFunction) {
     try {
       const employeeNo = req.params.EmployeeNo;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = (page - 1) * limit;
 
       if (!employeeNo) {
         console.error("Invalid employee number"); // Log invalid employee number error
@@ -48,9 +51,16 @@ export default class NewTicketController {
       }
       console.log("employeeNo", employeeNo);
 
-      const tickets = await newTicketRepository.getByEmployeeNo(employeeNo);
+      const tickets = await newTicketRepository.getByEmployeeNo(employeeNo, limit, offset );
+      const totalCount = await newTicketRepository.countByEmployeeNo(employeeNo);
+
       console.log("Tickets:", tickets);
-      res.status(200).json(tickets);
+      res.status(200).json({
+        currentPage : page,
+        totalPages: Math.ceil(totalCount / limit),
+        totalItems : totalCount,
+        items: tickets
+      });
     } catch (error) {
       console.error("Error in getByEmployeeNo controller:", error); // Log the error
       next(error);

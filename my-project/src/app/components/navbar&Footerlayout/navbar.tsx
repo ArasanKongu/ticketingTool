@@ -25,7 +25,7 @@ interface User {
   email: string;
   password: string;
   profile_name: string;
-  emp_no: string;
+  EmployeeNo: string;
   mobile_no: string;
   status: number;
 }

@@ -34,16 +34,24 @@ export class NewTicketRepository {
     });
   }
 
-  async getByEmployeeNo(employeeNo: string): Promise<NewTicketModel[]> {
+  async getByEmployeeNo(employeeNo: string, limit:number, offset: number): Promise<NewTicketModel[]> {
     if (!employeeNo) {
       throw new Error("Invalid Parameter");
     }
 
-    const query = `SELECT * FROM ticket_tool.new_ticket WHERE EmployeeNo = '${employeeNo}'`;
+    const query = `SELECT * FROM ticket_tool.new_ticket WHERE EmployeeNo = ? LIMIT ? OFFSET ?`;
+    const values = [employeeNo, limit, offset];
     console.log(query);
     const conn = await connection;
-    const [results] = await conn.query<NewTicketModel[]>(query, [employeeNo]);
+    const [results] = await conn.query<NewTicketModel[]>(query, values);
     return results;
+  }
+
+  async countByEmployeeNo(employeeNo : string): Promise<number> {
+    const query = `SELECT COUNT(*) as count FROM ticket_tool.new_ticket WHERE EmployeeNo = ?`;
+    const conn = await connection;
+    const [results] = await conn.query<RowDataPacket[]>(query, [employeeNo]);
+    return results[0].count;
   }
 
   async getAll(): Promise<NewTicketModel[]> {

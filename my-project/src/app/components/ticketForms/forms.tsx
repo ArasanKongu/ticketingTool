@@ -209,7 +209,7 @@ const GenerateTicketForm: React.FC = () => {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         userName = parsedUser.profile_name || "";
-        EmployeeNo = parsedUser.emp_no || "";
+        EmployeeNo = parsedUser.EmployeeNo || "";
       }
 
       try {

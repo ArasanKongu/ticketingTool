@@ -1,16 +1,19 @@
 const columns = [
-    // { name: "ID", uid: "id", sortable: true },
-    // { name: "TITLE", uid: "title", sortable: true },
-    { name: "EMPLOYEE NO", uid: "EmployeeNo", sortable: true },
-    // { name: "PROJECT", uid: "project", sortable: true },
-    // { name: "TYPE", uid: "type" },
-    // { name: "DATE", uid: "date" },
-    // { name: "DESCRIPTION", uid: "description" },
-    // { name: "URGENCY", uid: "urgency", sortable: true },
-    // { name: "LOCATION", uid: "Location" },
-    // { name: "USER NAME", uid: "userName" },
-    // { name: "WATCHERS", uid: "watchers" },
-    { name: "STATUS", uid: "status" },
+    { label: "ID", key: "id"},
+    // { label: "EMPLOYEE NO", key: "EmployeeNo"},
+    { label: "USER DETAILS", key: "userDetails" },
+    { label: "PROJECT", key: "project"},
+    { label: "TYPE", key: "type" },
+    { label: "URGENCY", key: "urgency"},
+    { label: "TITLE", key: "title"},
+    { label: "DESCRIPTION", key: "description" },
+    { label: "DATE", key: "date" },
   ];
 
-export {columns}
+export {columns, pageSelectionOptions}
+
+const pageSelectionOptions = [
+  { name: "5", uid: "5" },
+  { name: "10", uid: "10" },
+  { name: "20", uid: "20" },
+]

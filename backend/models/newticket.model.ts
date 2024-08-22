@@ -17,7 +17,7 @@ export interface NewTicketModel extends RowDataPacket {
 
 export interface Profile extends RowDataPacket {
   name: string;
-  emp_no: string;
+  EmployeeNo: string;
   mobile_no: string;
   email: string;
   status: number;
