@@ -6,7 +6,7 @@ const columns = [
     { label: "TYPE", key: "type" },
     { label: "URGENCY", key: "urgency"},
     { label: "TITLE", key: "title"},
-    { label: "DESCRIPTION", key: "description" },
+    // { label: "DESCRIPTION", key: "description" },
     { label: "DATE", key: "date" },
   ];
 

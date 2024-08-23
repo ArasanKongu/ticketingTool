@@ -15,7 +15,6 @@ const PageLayout: React.FC<LayoutProps> = ({ children }) => {
         <Sidebar />
         <div className="flex-1 overflow-y-hidden">{children}</div>
       </section>
-      {/* <Footer /> */}
     </main>
   );
 };

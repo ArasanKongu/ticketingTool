@@ -1,11 +1,17 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Button, Pagination, Select, SelectItem, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useCalendar } from "@nextui-org/react";
+import { Button, Chip, ChipProps, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import PageLayout from "../components/navbar&Footerlayout/layout";
 import { columns, pageSelectionOptions } from "./config";  // Import columns
+
+const statusColorMap: Record<string, ChipProps['color']> = {
+    High: "danger",
+    Low: "success",
+    Medium: "primary"
+}
 
 interface EmployeeData {
     id: number;
@@ -22,12 +28,14 @@ interface EmployeeData {
 export default function HistoryPage() {
     const [data, setData] = useState<EmployeeData[]>([]);
     const [page, setPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
         const fetchEmployeeDetails = async () => {
+            setLoading(true);
             try {
                 const token = localStorage.getItem("token");
                 const user = localStorage.getItem("user");
@@ -70,6 +78,8 @@ export default function HistoryPage() {
             } catch (error) {
                 console.error("Error fetching employee data:", error);
                 toast.error("Failed to fetch data. Please try again.");
+            } finally {
+                setLoading(false);
             }
         };
         fetchEmployeeDetails();
@@ -105,7 +115,7 @@ export default function HistoryPage() {
     const renderCell = (item: EmployeeData, columnKey: string) => {
         switch (columnKey) {
             case "userDetails":
-                return `${item.userName} (${item.EmployeeNo})`;
+                return <User name={item.EmployeeNo} avatarProps={{radius: "sm"}} />
             case "id":
                 return item.id;
             case "type":
@@ -113,11 +123,17 @@ export default function HistoryPage() {
             case "project":
                 return item.project;
             case "urgency":
-                return item.urgency;
+                return (
+                    <Chip color={statusColorMap[item.urgency]} size="md" variant="flat">
+                        {item.urgency}
+                    </Chip>
+                )
             case "title":
-                return item.title;
-            case "description":
-                return item.description;
+                return (
+                    <Tooltip 
+                    placement="bottom-end"
+                    classNames={{content:["text-black bg-neutral-200"]}}
+                    content={item.description}>{item.title}</Tooltip>);
             case "date":
                 return new Date(item.date).toLocaleString();
             default:
@@ -172,7 +188,6 @@ export default function HistoryPage() {
     ), [page, totalPages, onNextPage, onPreviousPage, onRowsPerPageChange]);
 
     const bottomContent = useMemo(() => (
-
         <div className="py-2 px-2 flex justify-between items-center">
             <span className="text-small text-default-400">
                 {`${currentPageData.length} of ${data.length} items`}
@@ -188,9 +203,9 @@ export default function HistoryPage() {
 
     const classNames = useMemo(() => ({
         wrapper: [
-            "mx-auto w-[calc(100%-1rem)] lg:w-full xl:w-full max-w-full overflow-x-auto overflow-y-hidden bg-background shadow-sm",
+            "max-h-[382px] mx-auto w-[calc(100%-1rem)] lg:w-full xl:w-full max-w-full overflow-x-auto overflow-y-auto scrollbar-hide bg-background shadow-sm",
         ],
-        th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
+        th: ["text-default-500", "border-b", "border-divider"],
         td: [
             "group-data-[first=true]:first:before:rounded-none",
             "group-data-[first=true]:last:before:rounded-none",
@@ -198,36 +213,41 @@ export default function HistoryPage() {
             "group-data-[last=true]:first:before:rounded-none",
             "group-data-[last=true]:last:before:rounded-none",
         ],
-    }),
-        [])
+    }), [])
     return (
         <PageLayout>
-            <Table
-                isCompact
-                aria-label="Employee History Table"
-                topContent={topContent}
-                topContentPlacement="outside"
-                bottomContent={bottomContent}
-                bottomContentPlacement="outside"
-                classNames={classNames}
-                className="flex p-5">
-                <TableHeader columns={columns}>
-                    {(column) => (
-                        <TableColumn key={column.key}>{column.label}</TableColumn>
-                    )}
-                </TableHeader>
-                <TableBody items={currentPageData}>
-                    {(item) => (
-                        <TableRow key={item.id}>
-                            {columns.map((column) => (
-                                <TableCell key={column.key}>
-                                    {renderCell(item, column.key)}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+            {loading ? (
+                <div className="flex justify-center items-center h-full">
+                    <Spinner size="lg" />
+                </div>
+            ) : (
+                <Table
+                    isHeaderSticky
+                    aria-label="Employee History Table"
+                    topContent={topContent}
+                    topContentPlacement="outside"
+                    bottomContent={bottomContent}
+                    bottomContentPlacement="outside"
+                    classNames={classNames}
+                    className="flex p-5">
+                    <TableHeader columns={columns}>
+                        {(column) => (
+                            <TableColumn key={column.key}>{column.label}</TableColumn>
+                        )}
+                    </TableHeader>
+                    <TableBody items={currentPageData}>
+                        {(item) => (
+                            <TableRow key={item.id}>
+                                {columns.map((column) => (
+                                    <TableCell key={column.key}>
+                                        {renderCell(item, column.key)}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            )}
         </PageLayout>
     );
 }

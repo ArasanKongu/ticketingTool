@@ -1,6 +1,6 @@
 "use client";
 import { User } from "@/app/types/create.types";
-import { useRouter } from "next/router"; // Import useRouter for redirection
+import { useRouter } from "next/navigation"; // Import useRouter for redirection
 import { useEffect, useState } from "react";
 
 import {
@@ -10,35 +10,28 @@ import {
   NavbarMenuItem,
   NavbarMenu,
   NavbarContent,
-  NavbarItem,
   Link,
-  Button,
   Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Tooltip,
 } from "@nextui-org/react";
 import { IoCopyOutline } from "react-icons/io5";
+import { menuItems } from "./config";
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   // Initialize router for redirection
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
+  // const menuItems = [
+  //   "Home",
+  //   "Create Ticket",
+  //   "History",
+  //   "Settings"
+  // ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -70,7 +63,7 @@ export default function Nav() {
       if (response.ok) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        window.location.href = "/login   ";
+        router.push("/login");
       } else {
         console.error("Logout failed");
       }
@@ -94,7 +87,7 @@ export default function Nav() {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit">NEXWARE</p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -144,17 +137,18 @@ export default function Nav() {
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
               className="w-full"
-              color={
-                index === 2
-                  ? "warning"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              href="#"
+              color="foreground"
+              // color={
+              //   index === 3
+              //     ? "warning"
+              //     : index === menuItems.length - 1
+              //     ? "danger"
+              //     : "foreground"
+              // }
+              href={item.link}
               size="lg"
             >
-              {item}
+              {item.name}
             </Link>
           </NavbarMenuItem>
         ))}
