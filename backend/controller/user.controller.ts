@@ -5,6 +5,7 @@ import { ResponseObject, StatusResponse } from "../types/response.type";
 import SchemaValidate from "../utils/apiErrhandler";
 import { userRepository } from "../repository/user.repository";
 import User from "../models/user.model";
+import { addTokenToBlacklist } from "../utils/tokenBlacklist";
 
 const ajv = new Ajv();
 
@@ -89,7 +90,7 @@ export default class UserController {
   }
 
   async login(req: Request, res: Response) {
-      let responseObject: ResponseObject = {
+    let responseObject: ResponseObject = {
       status: StatusResponse.failed,
       message: "Invalid Parameter",
     };
@@ -141,8 +142,29 @@ export default class UserController {
       status: StatusResponse.success,
       message: "Logout successful",
     };
-    return res.status(200).json(responseObject);
+
+    try {
+      const token = req.headers["x-access-token"] as string;
+      console.log("dd", token);
+      if (token) {
+        addTokenToBlacklist(token);
+        console.log(`Token blacklisted: ${token}`);
+      } else {
+        responseObject.message = "No token provided";
+        responseObject.status = StatusResponse.failed;
+        return res.status(400).json(responseObject);
+      }
+
+      return res.status(200).json(responseObject);
+    } catch (error) {
+      console.error("Error during logout", error);
+      responseObject.status = StatusResponse.failed;
+      responseObject.message = "Internal Server Error";
+      responseObject.error = error;
+      return res.status(500).json(responseObject);
+    }
   }
+
   async setSuperAdmin(req: Request, res: Response) {
     let responseObject: ResponseObject = {
       status: StatusResponse.failed,

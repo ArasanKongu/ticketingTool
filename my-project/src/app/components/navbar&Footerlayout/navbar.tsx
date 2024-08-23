@@ -1,5 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { User } from "@/app/types/create.types";
+import { useRouter } from "next/router"; // Import useRouter for redirection
+import { useEffect, useState } from "react";
+
 import {
   Navbar,
   NavbarBrand,
@@ -19,19 +22,10 @@ import {
 } from "@nextui-org/react";
 import { IoCopyOutline } from "react-icons/io5";
 
-interface User {
-  user_id: number;
-  username: string;
-  email: string;
-  password: string;
-  profile_name: string;
-  EmployeeNo: string;
-  mobile_no: string;
-  status: number;
-}
 export default function Nav() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  // Initialize router for redirection
 
   const menuItems = [
     "Profile",
@@ -45,6 +39,7 @@ export default function Nav() {
     "Help & Feedback",
     "Log Out",
   ];
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -59,6 +54,28 @@ export default function Nav() {
       }
     } catch (error) {
       console.error("Failed to copy email: ", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/user/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("token") || "",
+        },
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login   ";
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
 
@@ -95,9 +112,8 @@ export default function Nav() {
               as="button"
               className="transition-transform"
               color="secondary"
-              name={user?.profile_name || "Guest"}
+              name={user?.username}
               size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -116,7 +132,7 @@ export default function Nav() {
               </div>
             </DropdownItem>
             <DropdownItem key="settings">My Profile</DropdownItem>
-            <DropdownItem key="logout" color="danger">
+            <DropdownItem key="logout" color="danger" onClick={handleLogout}>
               Log Out
             </DropdownItem>
           </DropdownMenu>
