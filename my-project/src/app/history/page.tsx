@@ -1,7 +1,7 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Button, Chip, ChipProps, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from "@nextui-org/react";
+import { Avatar, Button, Chip, ChipProps, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import PageLayout from "../components/navbar&Footerlayout/layout";
@@ -98,7 +98,8 @@ export default function HistoryPage() {
     }, [page]);
 
     const onRowsPerPageChange = useCallback((e: any) => {
-        let [_, value] = Object.entries(e as React.Key[])[0];
+        // let [_, value] = Object.entries(e as React.Key[])[0];
+        const value = e.currentKey;
         setRowsPerPage(Number(value));
         setPage(1)
     }, []);
@@ -106,16 +107,19 @@ export default function HistoryPage() {
     const currentPageData = useMemo(() => {
         return data;
     },
-        // const startIndex = (page - 1) * rowsPerPage;
-        // const endIndex = startIndex + rowsPerPage;
-        // return data.slice(startIndex, endIndex);
-        // },
         [data]);
 
     const renderCell = (item: EmployeeData, columnKey: string) => {
         switch (columnKey) {
             case "userDetails":
-                return <User name={item.EmployeeNo} avatarProps={{radius: "sm"}} />
+                return (
+                    <div className="flex"><Avatar
+                        className="transition-transform"
+                        color="default"
+                        name={item.userName}
+                        size="sm"
+                    /><div className="flex pl-2 items-center">{item.EmployeeNo}</div></div>
+                )
             case "id":
                 return item.id;
             case "type":
@@ -130,10 +134,10 @@ export default function HistoryPage() {
                 )
             case "title":
                 return (
-                    <Tooltip 
-                    placement="bottom-end"
-                    classNames={{content:["text-black bg-neutral-200"]}}
-                    content={item.description}>{item.title}</Tooltip>);
+                    <Tooltip
+                        placement="bottom-start"
+                        classNames={{ content: ["text-black bg-neutral-200"] }}
+                        content={item.description}>{item.title}</Tooltip>);
             case "date":
                 return new Date(item.date).toLocaleString();
             default:
@@ -165,7 +169,7 @@ export default function HistoryPage() {
                     size="sm"
                     placeholder="Rows per page"
                     variant="bordered"
-                    defaultSelectedKeys={['10']}
+                    selectedKeys={new Set([rowsPerPage.toString()])}
                     onSelectionChange={onRowsPerPageChange}
                     className="flex justify-center items-center text-foreground outline-none text-sm w-20 h-3 "
                     classNames={{
@@ -185,7 +189,7 @@ export default function HistoryPage() {
                 </Select>
             </label>
         </div>
-    ), [page, totalPages, onNextPage, onPreviousPage, onRowsPerPageChange]);
+    ), [page, totalPages, onNextPage, onPreviousPage, onRowsPerPageChange, rowsPerPage]);
 
     const bottomContent = useMemo(() => (
         <div className="py-2 px-2 flex justify-between items-center">
@@ -203,7 +207,7 @@ export default function HistoryPage() {
 
     const classNames = useMemo(() => ({
         wrapper: [
-            "max-h-[382px] mx-auto w-[calc(100%-1rem)] lg:w-full xl:w-full max-w-full overflow-x-auto overflow-y-auto scrollbar-hide bg-background shadow-sm",
+            "max-h-[68vh] mx-auto w-[calc(100%-1rem)] lg:w-full xl:w-full max-w-full overflow-x-auto overflow-y-auto scrollbar-hide bg-background shadow-sm",
         ],
         th: ["text-default-500", "border-b", "border-divider"],
         td: [
