@@ -1,6 +1,6 @@
 export interface ProfileObject {
     id: number;
-    username: string;
+    userName: string;
     EmployeeNo : string;
     type: string;
     project: string;

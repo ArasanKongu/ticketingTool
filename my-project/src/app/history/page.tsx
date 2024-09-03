@@ -49,11 +49,11 @@ export default function HistoryPage() {
 
                 if (user) {
                     const parsedUser = JSON.parse(user);
-                    const employeeNo = parsedUser.EmployeeNo;
+                    const EmployeeNo = parsedUser.EmployeeNo;
                     console.log("EmployeeNo:", parsedUser.EmployeeNo)
 
                     const response = await axios.get(
-                        `http://localhost:8080/api/employee/${employeeNo}?page=${page}&limit=${rowsPerPage}`,
+                        `http://localhost:8080/api/employee/${EmployeeNo}?page=${page}&limit=${rowsPerPage}`,
                         {
                             headers: {
                                 "x-access-token": token,

@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "EmployeeNo": {
+            "type":"string"
+        },
+        "email": {
+            "type":"string"
+        },
+        "roles": {
+            "type":"string"
+        }
+    },
+    "required": ["EmployeeNo", "email", "roles"]
+}

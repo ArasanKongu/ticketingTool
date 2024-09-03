@@ -29,28 +29,29 @@ export class NewTicketRepository {
       // ticket.files,
     ];
     console.log("smdms", values);
+    console.log("Received Ticket data:", ticket);
     return new Promise<ResultSetHeader>(async (resolve, reject) => {
       (await connection).query<ResultSetHeader>(query, values);
     });
   }
 
-  async getByEmployeeNo(employeeNo: string, limit:number, offset: number): Promise<NewTicketModel[]> {
-    if (!employeeNo) {
+  async getByEmployeeNo(EmployeeNo: string, limit:number, offset: number): Promise<NewTicketModel[]> {
+    if (!EmployeeNo) {
       throw new Error("Invalid Parameter");
     }
 
     const query = `SELECT * FROM ticket_tool.new_ticket WHERE EmployeeNo = ? LIMIT ? OFFSET ?`;
-    const values = [employeeNo, limit, offset];
+    const values = [EmployeeNo, limit, offset];
     console.log(query);
     const conn = await connection;
     const [results] = await conn.query<NewTicketModel[]>(query, values);
     return results;
   }
 
-  async countByEmployeeNo(employeeNo : string): Promise<number> {
+  async countByEmployeeNo(EmployeeNo : string): Promise<number> {
     const query = `SELECT COUNT(*) as count FROM ticket_tool.new_ticket WHERE EmployeeNo = ?`;
     const conn = await connection;
-    const [results] = await conn.query<RowDataPacket[]>(query, [employeeNo]);
+    const [results] = await conn.query<RowDataPacket[]>(query, [EmployeeNo]);
     return results[0].count;
   }
 
@@ -63,7 +64,7 @@ export class NewTicketRepository {
   }
 
   async getAllEmpoyee(): Promise<Profile[]> {
-    const query = `SELECT * FROM ticket_tool.user_profile;`;
+    const query = `SELECT * FROM ticket_tool.user_profile`;
     console.log("Executing Query:", query);
 
     try {

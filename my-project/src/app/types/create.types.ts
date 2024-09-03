@@ -17,7 +17,7 @@ export type User = {
   EmployeeNo: string;
   email: string;
   mobile_no: string;
-  username: string;
+  userName: string;
   type: string;
   project: string;
   urgency: string;

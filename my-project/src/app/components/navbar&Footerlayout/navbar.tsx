@@ -77,7 +77,7 @@ export default function Nav() {
       position="static"
       isBordered
       isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
+      onMenuOpenChange={setIsMenuOpen} 
     >
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle
@@ -105,13 +105,13 @@ export default function Nav() {
               as="button"
               className="transition-transform"
               color="secondary"
-              name={user?.username}
+              name={user?.userName}
               size="sm"
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold">{user?.username} </p>
+              <p className="font-semibold">{user?.userName} </p>
               <div className="flex items-center space-x-2">
                 <p className="text-blue-600 underline text-xs">{user?.email}</p>
 

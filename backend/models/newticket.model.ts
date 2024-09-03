@@ -22,3 +22,9 @@ export interface Profile extends RowDataPacket {
   email: string;
   status: number;
 }
+
+export interface UserRoles extends RowDataPacket {
+  EmployeeNo : string;
+  email : string;
+  roles: string
+}

@@ -19,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 type User = {
   id: number;
   EmployeeNo: string;
-  name: string;
+  userName: string;
   email: string;
   mobile_no: string;
   status: number;
@@ -202,10 +202,11 @@ export default function GenerateTicketForm() {
 
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        userName = parsedUser.profile_name || "";
-        EmployeeNo = parsedUser.emp_no || "";
+        userName = parsedUser.userName || "";
+        EmployeeNo = parsedUser.EmployeeNo || "";
       }
-
+      console.log("User Data being sent:", { userName, EmployeeNo });
+      console.log("Form Data being sent:", formData);
       try {
         const response = await axios.post(
           "http://localhost:8080/api/tickets",
@@ -235,7 +236,6 @@ export default function GenerateTicketForm() {
           description: "",
           date: new Date(),
         });
-
         setSelectedUsers([]);
         handleClear(); // Clear the Select component
       } catch (error) {
@@ -301,7 +301,6 @@ export default function GenerateTicketForm() {
               <p className="text-red-500 text-sm">{errors.type}</p>
             )}
           </div>
-
           {/* Project */}
           <div>
             <Select
@@ -409,55 +408,6 @@ export default function GenerateTicketForm() {
             )}
           </div>
 
-          {/* Assigned to (Watchers) */}
-          {/* <div className="md:col-span-2 mt-3">
-            <Select
-              key={key} // Use key to force re-render
-              items={users}
-              label="Assigned to"
-              variant="underlined"
-              isMultiline={true}
-              selectionMode="multiple"
-              placeholder="Select a user"
-              labelPlacement="inside"
-              classNames={{
-                base: "max-w-2xl",
-                trigger: "min-h-12 py-2",
-              }}
-              onSelectionChange={handleSelectionChange}
-              renderValue={(items: SelectedItems<User>) => {
-                return (
-                  <div className="flex flex-wrap gap-2">
-                    {items.map((item: any) => (
-                      <Chip key={item.key}>{item.data.name}</Chip>
-                    ))}
-                  </div>
-                );
-              }}
-            >
-              {(user) => (
-                <SelectItem key={user.id.toString()} textValue={user.name}>
-                  <div className="flex gap-2 items-center">
-                    <Avatar
-                      alt={user.name}
-                      className="flex-shrink-0"
-                      size="sm"
-                      // src={user.avatar}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-small">{user.name}</span>
-                      <span className="text-tiny text-default-400">
-                        {user.email}
-                      </span>
-                    </div>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
-            {errors.watchers && (
-              <p className="text-red-500 text-sm">{errors.watchers}</p>
-            )}
-          </div> */}
           <div className="md:col-span-2 mt-3">
             <Select
               key={key}
@@ -485,15 +435,15 @@ export default function GenerateTicketForm() {
               }}
             >
               {(user) => (
-                <SelectItem key={user.id.toString()} textValue={user.name}>
+                <SelectItem key={user.id.toString()} textValue={user.userName}>
                   <div className="flex gap-2 items-center">
                     <Avatar
-                      alt={user.name}
+                      alt={user.userName}
                       className="flex-shrink-0"
                       size="sm"
                     />
                     <div className="flex flex-col">
-                      <span className="text-small">{user.name}</span>
+                      <span className="text-small">{user.userName}</span>
                       <span className="text-tiny text-default-400">
                         {user.email}
                       </span>

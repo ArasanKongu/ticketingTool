@@ -31,7 +31,7 @@ interface AccountProviderProps {
 
 export interface loginParams {
 	authcode: string;
-	username: string;
+	userName: string;
 	password: string;
 	deviceid: string;
 	devicetype: number;

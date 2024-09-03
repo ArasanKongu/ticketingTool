@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { newTicketRepository } from "../repository/newticket.respository";
+import { newTicketRepository } from "../repository/newticket.repository";
 import { NewTicketModel } from "../models/newticket.model";
 import Ajv from "ajv";
 import SchemaValidate from "../utils/apiErrhandler";
@@ -38,19 +38,19 @@ export default class NewTicketController {
 
   async getByEmployeeNo(req: Request, res: Response, next: NextFunction) {
     try {
-      const employeeNo = req.params.EmployeeNo;
+      const EmployeeNo = req.params.EmployeeNo;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const offset = (page - 1) * limit;
 
-      if (!employeeNo) {
+      if (!EmployeeNo) {
         console.error("Invalid employee number"); // Log invalid employee number error
         return res.status(400).json({ message: "Invalid employee number" });
       }
-      console.log("employeeNo", employeeNo);
+      console.log("EmployeeNo", EmployeeNo);
 
-      const tickets = await newTicketRepository.getByEmployeeNo(employeeNo, limit, offset );
-      const totalCount = await newTicketRepository.countByEmployeeNo(employeeNo);
+      const tickets = await newTicketRepository.getByEmployeeNo(EmployeeNo, limit, offset );
+      const totalCount = await newTicketRepository.countByEmployeeNo(EmployeeNo);
 
       console.log("Tickets:", tickets);
       res.status(200).json({
